@@ -40,3 +40,6 @@ Dark : #212529
 */
 
 
+.box {
+    cursor: crosshair !important ;
+}

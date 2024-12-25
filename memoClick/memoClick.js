@@ -1,76 +1,94 @@
-
 let row1 = document.getElementById("row1");
 let row2 = document.getElementById("row2");
-let row3= document.getElementById("row3");
+let row3 = document.getElementById("row3");
 let row4 = document.getElementById("row4");
 let row5 = document.getElementById("row5");
 
-// Create tab
-let tabs = [];
-for(i = 1; i <= 30 ; i++){ tabs.push(i) }
-
-// Create random tab
-let tabRandom = [];
-while( tabs.length > 0){
-  let numberRandom = tabs[Math.floor(Math.random()*tabs.length)]; 
-  tabs = tabs.filter(data => data !== numberRandom)
-  tabRandom.push(numberRandom); 
-}
-
 // show Tab
 let rows = [row1, row2, row3, row4, row5];
-tabRandom.forEach((item, index) => {
-  let rowIndex = Math.floor(index / 6); 
-  rows[rowIndex].innerHTML += `
-    <button  
-      id="it-${item}" 
-      value="${item}"
-      class="${item <= 10 ? 'btn-info' : 'btn-secondary'} btn fs-1 fw-bold col-2"
+function newTab () {
+  // reset 
+  rows.forEach(row => row.innerHTML = "");
 
-    >
-      ${item} 
-    </button>
-  `;
-});
+  // tabs
+  let tabs = [];
+  for(i = 1; i <= 30 ; i++){ tabs.push(i) }
 
-// HandleGame
-let tabResult = [];
-for(i = 1; i <= 10 ; i++){ tabResult.push(i)}
-let countClick = 1 ;
-// listen button 
-tabRandom.forEach(item => {
-  let listenBtn = document.getElementById("it-"+item);
-  let progressbar = document.getElementById("progressbar");
-  let message = document.getElementById("message");
-  let message2 = document.getElementById("message2");
-  listenBtn.addEventListener("click", () => {
-    if(countClick == listenBtn.value){
-      if(countClick == 10){ 
-        message.innerHTML =`<p id="message" class="text-success"> Perfect You Win ! </p>`
+  // random tab
+  let tabRandom = [];
+  while( tabs.length > 0){
+    let numberRandom = tabs[Math.floor(Math.random()*tabs.length)]; 
+    tabs = tabs.filter(data => data !== numberRandom)
+    tabRandom.push(numberRandom); 
+  }
+    tabRandom.forEach((item, index) => {
+      let rowIndex = Math.floor(index / 6); 
+      rows[rowIndex].innerHTML += `
+        <button  
+          id="it-${item}" 
+          value="${item}"
+          class="${item <= 10 ? 'btn-info' : 'btn-secondary'} box btn fs-1 fw-bold col-2"
+          style="min-height : 60px"
+        >
+          ${item}
+        </button>
+      `;
+    });
+
+
+  // HandleGame
+  let tabResult = [];
+  for(i = 1; i <= 10 ; i++){ tabResult.push(i)}
+  let countClick = 1 ;
+
+  // allow button
+  let gameOn = true;
+
+  tabRandom.forEach(item => {
+    let listenBtn = document.getElementById("it-"+item);
+    let progressbar = document.getElementById("progressbar");
+    let message = document.getElementById("message");
+    let message2 = document.getElementById("message2");
+
+    // item hide
+    setTimeout(() => {
+      listenBtn.textContent = ""
+    }, 5000);
+
+    // listen btn
+    listenBtn.addEventListener("click", () => {
+      if (!gameOn) return;
+      if(countClick == listenBtn.value){
+        if(countClick == 10){ 
+          message.innerHTML =`<p id="message" class="text-success"> Perfect You Win ! </p>`
+          gameOn = false;
+          console.log("win : " + gameOn);
+        } else {
+          message.innerHTML =`<p id="message" class="text-info">${listenBtn.value} Yes !</p>`
+        }
+        message2.innerHTML =`<p id="message2"></p>`
+        progressbar.style.width = (countClick*10)+"%";
+        countClick ++;
       } else {
-        message.innerHTML =`<p id="message" class="text-info">${listenBtn.value} Yes !</p>`
+        message.innerHTML =`<p id="message" class="text-danger"> You lose !</p>`
+        message2.innerHTML =`<p id="message2" class="text-info h2"> Try again ? </p>`
+        countClick = 1;
+        progressbar.style.width = "0%";
       }
-      message2.innerHTML =`<p id="message2"></p>`
-      progressbar.style.width = (countClick*10)+"%";
-      countClick ++;
-    } else {
-      message.innerHTML =`<p id="message" class="text-danger"> You lose !</p>`
-      message2.innerHTML =`<p id="message2" class="text-info h2"> Try again ? </p>`
-      countClick = 1;
-      progressbar.style.width = "0%";
-    }
-  })
-});
+    });
+  });
+}
+newTab ()
+
 // resetGame
 function newgame() { 
   message.innerHTML =`<p id="message"></p>`
   message2.innerHTML =`<p id="message2"></p>`
   countClick = 1;
   progressbar.style.width = "0%";
+  gameOn = true;
+  newTab()
 }
-
-
-
 
 
 // How to show datas with : forEach
