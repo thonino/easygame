@@ -37,9 +37,16 @@ Info : #0dcaf0
 Light : #f8f9fa
 Secondary : #6c757d
 Dark : #212529
+
 */
 
 
 .box {
     cursor: crosshair !important ;
+    min-height: 65px; 
+    border: 1px solid #000;
+}
+.max-wh{ 
+    max-width: 600px;
+    max-height: 600px;
 }

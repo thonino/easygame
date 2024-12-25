@@ -21,28 +21,30 @@ function newTab () {
     tabs = tabs.filter(data => data !== numberRandom)
     tabRandom.push(numberRandom); 
   }
-    tabRandom.forEach((item, index) => {
-      let rowIndex = Math.floor(index / 6); 
-      rows[rowIndex].innerHTML += `
-        <button  
-          id="it-${item}" 
-          value="${item}"
-          class="${item <= 10 ? 'btn-info' : 'btn-secondary'} box btn fs-1 fw-bold col-2"
-          style="min-height : 60px"
-        >
-          ${item}
-        </button>
-      `;
-    });
-
-
+  tabRandom.forEach((item, index) => {
+    let rowIndex = Math.floor(index / 6); 
+    rows[rowIndex].innerHTML += `
+      <button  
+        id="it-${item}" 
+        value="${item}"
+        class="${item <= 10 ? 'text-info' : 'text-secondary'} box btn fs-1 fw-bold col-2"
+      >
+        ${item}
+      </button>
+    `;
+  });
+  
   // HandleGame
   let tabResult = [];
   for(i = 1; i <= 10 ; i++){ tabResult.push(i)}
   let countClick = 1 ;
 
-  // allow button
-  let gameOn = true;
+  let gameOn = false;
+
+  // Allow button
+  setTimeout(() => {
+    gameOn = true;
+  }, 8000);
 
   tabRandom.forEach(item => {
     let listenBtn = document.getElementById("it-"+item);
@@ -50,19 +52,55 @@ function newTab () {
     let message = document.getElementById("message");
     let message2 = document.getElementById("message2");
 
-    // item hide
+    // Show positions
+    let showPositions = document.getElementById("showPositions");
+    showPositions.addEventListener("click", () => {
+      if(item <= 10){
+        listenBtn.style.backgroundColor = "#0dcaf0";
+        showPositions.classList.add("d-none")
+      }
+    })
+
+    // GiveUp
+    let giveUp = document.getElementById("giveUp");
+    giveUp.addEventListener("click", () => {
+      if(item <= 10){
+        listenBtn.textContent = listenBtn.value; 
+      }
+      message.innerHTML =`<p id="message" class="text-danger"> You lost !</p>`
+      message2.textContent = "";
+      listenBtn.style.backgroundColor = "#f8f9fa";
+      showPositions.classList.add("d-none");
+      giveUp.classList.add("d-none");
+      gameOn = false;
+    })
+
+    // Item hide
     setTimeout(() => {
-      listenBtn.textContent = ""
-    }, 5000);
+      listenBtn.textContent = ""; 
+      listenBtn.style.backgroundColor = "#f0f0f0"; 
+    }, 8000);
+
+    // timer
+    let timerNumber = 8;
+    let timerElement = document.getElementById("timer");
+    for (let timer = timerNumber; timer >= 0; timer--) {
+      setTimeout(() => {
+        timerElement.textContent = timer;
+      }, (timerNumber - timer) * 1000); 
+    }
+    setTimeout(() => {
+      timerElement.textContent = "";
+    },  timerNumber*1000);
 
     // listen btn
     listenBtn.addEventListener("click", () => {
       if (!gameOn) return;
       if(countClick == listenBtn.value){
         if(countClick == 10){ 
-          message.innerHTML =`<p id="message" class="text-success"> Perfect You Win ! </p>`
+          message.innerHTML =`<p id="message" class="text-success"> Perfect You Won ! </p>`
           gameOn = false;
-          console.log("win : " + gameOn);
+          message2.textContent = "";
         } else {
           message.innerHTML =`<p id="message" class="text-info">${listenBtn.value} Yes !</p>`
         }
@@ -70,77 +108,39 @@ function newTab () {
         progressbar.style.width = (countClick*10)+"%";
         countClick ++;
       } else {
-        message.innerHTML =`<p id="message" class="text-danger"> You lose !</p>`
-        message2.innerHTML =`<p id="message2" class="text-info h2"> Try again ? </p>`
+        message.innerHTML =`<p id="message" class="text-danger"> It's wrong !</p>`
+        message2.innerHTML =`<p id="message2" class="h2 fw-bold text-info"> Try again ! </p>`
         countClick = 1;
         progressbar.style.width = "0%";
       }
     });
   });
 }
-newTab ()
 
 // resetGame
 function newgame() { 
-  message.innerHTML =`<p id="message"></p>`
-  message2.innerHTML =`<p id="message2"></p>`
+  message.textContent = "";
+  message2.textContent = "";
   countClick = 1;
   progressbar.style.width = "0%";
+  showPositions.classList.remove("d-none");
+  giveUp.classList.remove("d-none");
   gameOn = true;
   newTab()
 }
 
+window.addEventListener("load", () => {
+  newgame()
+});
 
-// How to show datas with : forEach
-// let tabs = [
-//   { row1 : "a", row2 : "0" },
-//   { row1 : "b", row2 : "1" },
-//   { row1 : "c", row2 : "2" },
-//   { row1 : "d", row2 : "3" },
-//   { row1 : "e", row2 : "4" },
-//   { row1 : "f", row2 : "5" },
-//   { row1 : "g", row2 : "6" },
-//   { row1 : "h", row2 : "7" },
-//   { row1 : "i", row2 : "8" },
-//   { row1 : "j", row2 : "9" },
-// ];
 
-// let tabs1 = [];
-// let tabs2 = [];
+// Toast
+const toastTrigger = document.getElementById('liveToastBtn')
+const toastLiveExample = document.getElementById('liveToast')
+if (toastTrigger) {
+  const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
+  toastTrigger.addEventListener('click', () => {
+    toastBootstrap.show()
+  })
+}
 
-// let show1 = document.getElementById("show1");
-// let show2 = document.getElementById("show2");
-// tabs.forEach(item => {
-//   show1.innerHTML += `{ ${Object.keys(item)[0]} : ${Object.values(item)[0]} } , `;
-//   show2.innerHTML += `{ ${Object.keys(item)[1]} : ${Object.values(item)[1]} } , ` 
-//   tabs1.push(`row1 : ${Object.values(item)[0]}`);
-//   tabs2.push(`row2 : ${Object.values(item)[1]}`)
-// });
-
-// let show3 = document.getElementById("show3");
-// let show4 = document.getElementById("show4")
-// tabs1.forEach(item => {
-//   show3.innerHTML += `{ ${item } } , `
-// })
-// tabs2.forEach(item => {
-//   show4.innerHTML += `{ ${item} } , `
-// })
-
-/*
-
-<!-- How to show datas with forEach -->
-<!-- <h1 id="title" class="fw-bold text-info-dark">MemoClick</h1>
-<div class="d-flex ">
-  <p id="show1"></p>
-</div>
-<div class="d-flex">
-  <p id="show2"></p>
-</div>
-<div class="d-flex ">
-  <p id="show3"></p>
-</div>
-<div class="d-flex ">
-  <p id="show4"></p>
-</div> -->
-
-*/

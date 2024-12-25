@@ -32,41 +32,77 @@
 
     <!-- Main Content -->
     <main class="d-flex flex-column align-items-center justify-content-center mx-4">
-      <h1 class="fw-bold text-secondary mb-2">Memo Click</h1>
+      <h1 class="fw-bold text-secondary m-0">Memo-click</h1>
       <!-- Reset game -->
-      <div  class="my-2"  onclick="newgame()" >
-        <i class="bi bi-arrow-clockwise btn bg-primary text-light mb-3">
-          New game
-        </i> 
+      <div class="d-flex align-items-center justify-content-center gap-2 my-2 mb-3">
+        <div  class="m-0 p-0"  onclick="newgame()" >
+          <i class="bi bi-arrow-clockwise btn bg-primary text-light">
+            New game
+          </i> 
+        </div>
+        <button id="liveToastBtn" class="btn btn-sm m-0 p-0">
+          <i class="bi bi-info-lg fw- btn bg-warning">
+            Help
+          </i> 
+        </button>
+        <!-- Toast -->
+        <div class="toast-container position-fixed top-0 end-0 p-2">
+          <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-warning">
+              <strong class="me-auto">How to play ?</strong>
+              <small>Help</small>
+              <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body bg-light fst-italic text-start">
+              memorize the cells from 1 to 10. </br>
+              click on the cells from the smallest to the biggest.</br>
+              if you need a hint, you click on "show positions".
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Progressbar -->
-      <div 
-        class="progress container w-100 mb-4" 
-        role="progressbar" 
-        aria-label="Example with label" 
-        aria-valuenow="10" 
-        aria-valuemin="0" 
-        aria-valuemax="100"
-      >
-        <div  id="progressbar"  class="progress-bar overflow-visible text-dark"></div>
-      </div>
+      <div class="container d-flex justify-content-center">
+        <!-- Progressbar -->
+        <div 
+          class="progress max-wh mb-4" 
+          role="progressbar" 
+          aria-label="Example with label" 
+          aria-valuenow="10" 
+          aria-valuemin="0" 
+          aria-valuemax="100"
+        >
+          <div  id="progressbar"  class="progress-bar overflow-visible text-dark"></div>
+        </div>
 
-      <!-- Show Tab -->
-      <div id="containBtn" class="d-flex flex-column w-100 ">
-        <p id="row1" class="container d-flex justify-content-center flex-nowrap gap-2 "></p>
-        <p id="row2" class="container d-flex justify-content-center flex-nowrap gap-2 "></p>
-        <p id="row3" class="container d-flex justify-content-center flex-nowrap gap-2 "></p>
-        <p id="row4" class="container d-flex justify-content-center flex-nowrap gap-2 "></p>
-        <p id="row5" class="container d-flex justify-content-center flex-nowrap gap-2 "></p>
+        <!-- Show Tab -->
+        <div id="containBtn" class="d-flex flex-column w-100 max-wh">
+          <p id="row1" class="container d-flex justify-content-center flex-nowrap gap-2"></p>
+          <p id="row2" class="container d-flex justify-content-center flex-nowrap gap-2"></p>
+          <p id="row3" class="container d-flex justify-content-center flex-nowrap gap-2"></p>
+          <p id="row4" class="container d-flex justify-content-center flex-nowrap gap-2"></p>
+          <p id="row5" class="container d-flex justify-content-center flex-nowrap gap-2"></p>
+        </div>
       </div>
 
       <!-- Messages -->
-      <div class="fs-1 fw-bold ">
+      <div class="d-flex gap-2">
+        <button id="showPositions" class="btn btn-warning"> Show positions </button>
+        <button id="giveUp" class="btn btn-danger"> Give Up </button>
+      </div>
+      <div class="h1 fw-bold">
+        <p id="timer"></p>
         <p id="message"></p>
         <p id="message2"></p>
       </div>
     </main>
+
+    <!-- Footer -->
+    <footer class="container-fluid position-fixed bottom-0  p-0">
+      <div class="bg-dark text-light contaziner-fluid text-center p-4">
+        <p class="mb-0">&copy; 2024 <strong>EasyGame</strong> Tous droits réservés.</p>
+      </div>
+    </footer>
 
   </body>
 </html>
