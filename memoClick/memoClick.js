@@ -14,6 +14,12 @@ function newTab () {
   let tabs = [];
   for(i = 1; i <= 30 ; i++){ tabs.push(i) }
 
+
+  // params
+  let gameOn = false;
+  let timerNumber = 8;
+  let level = 10;
+
   // random tab
   let tabRandom = [];
   while( tabs.length > 0){
@@ -27,7 +33,7 @@ function newTab () {
       <button  
         id="it-${item}" 
         value="${item}"
-        class="${item <= 10 ? 'text-info' : 'text-secondary'} box btn fs-1 fw-bold col-2"
+        class="${item <= level ? 'text-info' : 'text-secondary'} box btn fs-1 fw-bold col-2"
       >
         ${item}
       </button>
@@ -36,53 +42,44 @@ function newTab () {
   
   // HandleGame
   let tabResult = [];
-  for(i = 1; i <= 10 ; i++){ tabResult.push(i)}
+  for(i = 1; i <= level ; i++){ tabResult.push(i)}
   let countClick = 1 ;
-
-  let gameOn = false;
 
   // Allow button
   setTimeout(() => {
     gameOn = true;
-  }, 8000);
+  }, timerNumber*1000);                                                                                                                                         
 
   tabRandom.forEach(item => {
     let listenBtn = document.getElementById("it-"+item);
     let progressbar = document.getElementById("progressbar");
     let message = document.getElementById("message");
     let message2 = document.getElementById("message2");
+    let tryagain = document.getElementById("tryagain");
+    let showPositions = document.getElementById("showPositions");
+    let hidePositions = document.getElementById("hidePositions");
+    let positions = false;
 
     // Show positions
-    let showPositions = document.getElementById("showPositions");
     showPositions.addEventListener("click", () => {
-      if(item <= 10){
+      if(item <= level){
         listenBtn.style.backgroundColor = "#0dcaf0";
-        showPositions.classList.add("d-none")
+        showPositions.classList.add("d-none");
+        hidePositions.classList.remove("d-none");
+        positions = true;
       }
     })
-
-    // GiveUp
-    let giveUp = document.getElementById("giveUp");
-    giveUp.addEventListener("click", () => {
-      if(item <= 10){
-        listenBtn.textContent = listenBtn.value; 
+    // Show positions
+    hidePositions.addEventListener("click", () => {
+      if(item <= level){
+        listenBtn.style.backgroundColor = "#f0f0f0";
+        hidePositions.classList.add("d-none");
+        showPositions.classList.remove("d-none");
+        positions = false;
       }
-      message.innerHTML =`<p id="message" class="text-danger"> You lost !</p>`
-      message2.textContent = "";
-      listenBtn.style.backgroundColor = "#f8f9fa";
-      showPositions.classList.add("d-none");
-      giveUp.classList.add("d-none");
-      gameOn = false;
     })
-
-    // Item hide
-    setTimeout(() => {
-      listenBtn.textContent = ""; 
-      listenBtn.style.backgroundColor = "#f0f0f0"; 
-    }, 8000);
 
     // timer
-    let timerNumber = 8;
     let timerElement = document.getElementById("timer");
     for (let timer = timerNumber; timer >= 0; timer--) {
       setTimeout(() => {
@@ -93,27 +90,72 @@ function newTab () {
       timerElement.textContent = "";
     },  timerNumber*1000);
 
+    // Item hide
+    setTimeout(() => {
+      listenBtn.textContent = ""; 
+      listenBtn.style.backgroundColor = "#f0f0f0"; 
+    }, timerNumber*1000);
+
+    // GiveUp
+    let giveUp = document.getElementById("giveUp");
+    giveUp.addEventListener("click", () => {
+      showValues ()                           
+      message.innerHTML =`<p id="message" class="text-danger"> You lost !</p>`
+      message2.textContent = "";
+      listenBtn.style.backgroundColor = "#f8f9fa";
+      giveUp.classList.add("d-none");
+      tryagain.classList.add("d-none");
+      gameOn = false;
+    })
+
+    // Show values
+    function showValues() {
+      if(item <= level){ 
+        message2.textContent = "";
+        listenBtn.textContent = listenBtn.value; 
+        listenBtn.style.backgroundColor = "#f0f0f0"; 
+        showPositions.classList.add("d-none");
+        hidePositions.classList.add("d-none");
+        giveUp.classList.add("d-none");
+        gameOn = false;
+      } 
+    }
+
     // listen btn
     listenBtn.addEventListener("click", () => {
       if (!gameOn) return;
-      if(countClick == listenBtn.value){
-        if(countClick == 10){ 
-          message.innerHTML =`<p id="message" class="text-success"> Perfect You Won ! </p>`
-          gameOn = false;
-          message2.textContent = "";
+      if (countClick == listenBtn.value) {
+        if (countClick == level) {
+          message.innerHTML = `<p id="message" class="text-success"> Perfect You Won ! </p>`;
+          showValues() 
         } else {
-          message.innerHTML =`<p id="message" class="text-info">${listenBtn.value} Yes !</p>`
+          message.innerHTML = `<p id="message" class="text-info">${listenBtn.value} Yes !</p>`;
+          listenBtn.textContent = listenBtn.value; 
+          listenBtn.style.backgroundColor = "#f0f0f0"; 
         }
-        message2.innerHTML =`<p id="message2"></p>`
-        progressbar.style.width = (countClick*10)+"%";
-        countClick ++;
+        progressbar.style.width = (countClick * 10) + "%";
+        countClick++;
       } else {
-        message.innerHTML =`<p id="message" class="text-danger"> It's wrong !</p>`
-        message2.innerHTML =`<p id="message2" class="h2 fw-bold text-info"> Try again ! </p>`
+        message.innerHTML = `<p id="message" class="text-danger"> It's wrong !</p>`;
+        listenBtn.textContent = listenBtn.value; 
+        tryagain.classList.remove("d-none");
+        gameOn = false;
         countClick = 1;
         progressbar.style.width = "0%";
       }
     });
+    
+
+    // Try again
+    tryagain.addEventListener("click", () => {
+      listenBtn.textContent = ""; 
+      gameOn = true;
+      message.textContent = "";
+      message2.textContent = "";
+      tryagain.classList.add("d-none");
+      if(positions){ listenBtn.style.backgroundColor = "#0dcaf0"; }
+      else { listenBtn.style.backgroundColor = "#f0f0f0";} 
+    })
   });
 }
 
@@ -124,6 +166,7 @@ function newgame() {
   countClick = 1;
   progressbar.style.width = "0%";
   showPositions.classList.remove("d-none");
+  hidePositions.classList.add("d-none");
   giveUp.classList.remove("d-none");
   gameOn = true;
   newTab()
@@ -132,7 +175,6 @@ function newgame() {
 window.addEventListener("load", () => {
   newgame()
 });
-
 
 // Toast
 const toastTrigger = document.getElementById('liveToastBtn')
