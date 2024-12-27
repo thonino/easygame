@@ -29,69 +29,108 @@ for (let i = 0; i < 10; i++) {
 // create the snake default
 let size = 2;
 let direction = "right";
-let snake = ["x5-y4", "x5-y3"];
-let lastPosition = [];
+let snake = ["x5-y3", "x5-y2"];
 snake.forEach(fill => {
   let cell = document.getElementById(fill);
   if (cell) cell.classList.add("bg-info");
 });
 
-// direction buttons and not allow revers
+// direction buttons and forbid revers
 function changeDirection(value) {
   let reverse = { left: "right", up: "down", down: "up", right: "left" };
-  // change direction
-  if (value === reverse[direction]){ 
+  if (value === reverse[direction]) {
     console.log(`direction ${value} error`);
     return;
   }
-  direction = value; // new direction
+  direction = value;
 }
 
 // map limit
 function isOut(position) {
   return position.some(pos => {
     let matches = pos.match(/-?\d+/g);
-    return matches.some(num => parseInt(num) < 0 || parseInt(num) > 9); 
+    return matches.some(num => parseInt(num) < 0 || parseInt(num) > 9);
   });
 }
 
-// Movement
-function shiftSnake() {
-  // delete last style
+// Random number generator
+function randomNumber() {
+  return Math.floor(Math.random() * 10);
+}
+
+// eat default
+let eat = "x3-y6"; 
+let level = 1;
+
+// Update food position
+function updateEatPosition(newPosition) {
+  if (document.getElementById(eat)) {
+    document.getElementById(eat).style.backgroundColor = "#d6d8db";
+  }
+  if (document.getElementById(newPosition)) {
+    document.getElementById(newPosition).style.backgroundColor = "#198754";
+  }
+  eat = newPosition;
+}
+updateEatPosition(eat);
+
+// Generate a new eat
+function generateNewEat() {
+  level++;
+  const newX = randomNumber();
+  const newY = randomNumber();
+  const newEat = `x${newX}-y${newY}`;
+  updateEatPosition(newEat);
+}
+
+// check if eat
+function checkEat() {
+  if (snake[0] === eat) {
+    let lastPosition = [...snake];
+    snake.push(lastPosition[1])
+    generateNewEat();
+  }
+}
+
+// Movement snake
+function moveSnake() {
   snake.forEach(fill => {
     let cell = document.getElementById(fill);
     if (cell) cell.classList.remove("bg-info");
   });
-
-  // handle new position
-  snake = snake.map(item => {
-    lastPosition = snake;
+  let lastPosition = [...snake];
+  snake = snake.map((item, index) => {
     let splitting = item.match(/\d+/g);
     let x = parseInt(splitting[0], 10);
     let y = parseInt(splitting[1], 10);
-    if (direction === "right") y += 1;
-    if (direction === "left") y -= 1;
-    if (direction === "up") x -= 1;
-    if (direction === "down") x += 1;
+    if (index === 0) {
+      if (direction === "right") y += 1;
+      if (direction === "left") y -= 1;
+      if (direction === "up") x -= 1;
+      if (direction === "down") x += 1;
+    } else {
+      let prev = lastPosition[index - 1];
+      return prev;
+    }
     return "x" + x + "-y" + y;
   });
 
-  // make style for new position
   snake.forEach(fill => {
     let cell = document.getElementById(fill);
     if (cell) cell.classList.add("bg-info");
   });
 
-  // check if the snake is out
   if (isOut(snake)) {
-    clearInterval(gameInterval); // stop move
-    console.log("your snake is out");
+    clearInterval(gameInterval);
+    console.log("the snake is out");
     lastPosition.forEach(fill => {
       let cell = document.getElementById(fill);
       if (cell) cell.classList.add("bg-danger");
     });
     return;
   }
+
+  checkEat();
 }
-// start the movement
-let gameInterval = setInterval(shiftSnake, 500);
+
+let gameInterval = setInterval(moveSnake, 500);
