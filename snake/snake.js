@@ -1,4 +1,4 @@
-// Créer une grille de 10x10
+// create rows and columns
 let row = {};
 for (let i = 0; i < 10; i++) {
   row[`row${i}`] = [];
@@ -7,15 +7,15 @@ for (let i = 0; i < 10; i++) {
   }
 }
 
-// Inclure la grille dans le HTML
+// include the table to html
 let table = document.getElementById("table");
 for (let i = 0; i < 10; i++) {
-  let rowDiv = document.createElement("div"); // Ligne
+  let rowDiv = document.createElement("div"); // row
   rowDiv.style.display = "flex";
   rowDiv.style.marginBottom = "1px";
 
   row[`row${i}`].forEach(item => {
-    let colDiv = document.createElement("div"); // Colonne
+    let colDiv = document.createElement("div"); // Column
     colDiv.id = "x" + i + "-y" + item;
     colDiv.style.width = "30px";
     colDiv.style.height = "30px";
@@ -26,7 +26,7 @@ for (let i = 0; i < 10; i++) {
   table.appendChild(rowDiv);
 }
 
-// Créer le serpent par défaut
+// create the snake default
 let size = 2;
 let direction = "right";
 let snake = ["x5-y4", "x5-y3"];
@@ -36,12 +36,18 @@ snake.forEach(fill => {
   if (cell) cell.classList.add("bg-info");
 });
 
-// buttons
+// direction buttons and not allow revers
 function changeDirection(value) {
-  direction = value;
+  let reverse = { left: "right", up: "down", down: "up", right: "left" };
+  // change direction
+  if (value === reverse[direction]){ 
+    console.log(`direction ${value} error`);
+    return;
+  }
+  direction = value; // new direction
 }
 
-// Fonction pour vérifier si le serpent dépasse les limites
+// map limit
 function isOut(position) {
   return position.some(pos => {
     let matches = pos.match(/-?\d+/g);
@@ -49,15 +55,15 @@ function isOut(position) {
   });
 }
 
-// Mouvement du serpent
+// Movement
 function shiftSnake() {
-  // Supprimer les styles actuels
+  // delete last style
   snake.forEach(fill => {
     let cell = document.getElementById(fill);
     if (cell) cell.classList.remove("bg-info");
   });
 
-  // Calculer les nouvelles positions
+  // handle new position
   snake = snake.map(item => {
     lastPosition = snake;
     let splitting = item.match(/\d+/g);
@@ -69,10 +75,16 @@ function shiftSnake() {
     if (direction === "down") x += 1;
     return "x" + x + "-y" + y;
   });
-  console.log(lastPosition);
-  // Vérifier les limites
+
+  // make style for new position
+  snake.forEach(fill => {
+    let cell = document.getElementById(fill);
+    if (cell) cell.classList.add("bg-info");
+  });
+
+  // check if the snake is out
   if (isOut(snake)) {
-    clearInterval(gameInterval); // Arrêter le mouvement
+    clearInterval(gameInterval); // stop move
     console.log("your snake is out");
     lastPosition.forEach(fill => {
       let cell = document.getElementById(fill);
@@ -80,13 +92,6 @@ function shiftSnake() {
     });
     return;
   }
-
-  // Ajouter les styles pour les nouvelles positions
-  snake.forEach(fill => {
-    let cell = document.getElementById(fill);
-    if (cell) cell.classList.add("bg-info");
-  });
 }
-
-// Lancer le mouvement
+// start the movement
 let gameInterval = setInterval(shiftSnake, 500);
