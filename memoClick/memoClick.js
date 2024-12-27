@@ -17,7 +17,7 @@ function newTab () {
   // params
   let gameOn = false;
   let timerNumber = 3;
-  let level = 2;
+  let level = 5;
 
   // random tab
   let tabRandom = [];
@@ -125,7 +125,7 @@ function newTab () {
       if (!gameOn) return;
       if (countClick == listenBtn.value) {
         if (countClick == level) {
-          message.innerHTML = `<p id="message" class="text-success"> Perfect You Won ! </p>`;
+          message.innerHTML = `<p id="message" class="text-success"> Perfect you won ! </p>`;
           showValues();
           listenBtn.style.color = "#198754";
         } else {
@@ -134,7 +134,7 @@ function newTab () {
           listenBtn.style.backgroundColor = "#f0f0f0"; 
           
         }
-        progressbar.style.width = (countClick * ( 100/level)) + "%"; // count percentage
+        progressbar.style.width = (countClick * ( 100/level)) + "%"; 
         countClick++;
       } else {
         message.innerHTML = `<p id="message" class="text-danger"> It's wrong !</p>`;
