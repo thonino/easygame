@@ -17,8 +17,8 @@ for (let i = 0; i < 10; i++) {
   row[`row${i}`].forEach(item => {
     let colDiv = document.createElement("div"); // Column
     colDiv.id = "x" + i + "-y" + item;
-    colDiv.style.width = "30px";
-    colDiv.style.height = "30px";
+    colDiv.style.width = "40px";
+    colDiv.style.height = "40px";
     colDiv.style.backgroundColor = "#d6d8db";
     colDiv.style.marginRight = "1px";
     rowDiv.appendChild(colDiv);
@@ -53,14 +53,13 @@ function isOut(position) {
   });
 }
 
-// Random number generator
-function randomNumber() {
-  return Math.floor(Math.random() * 10);
-}
-
 // eat default
 let eat = "x3-y6"; 
 let level = 1;
+
+// show level
+let showLevel = document.getElementById("level");
+showLevel.textContent = level;
 
 // Update food position
 function updateEatPosition(newPosition) {
@@ -74,11 +73,14 @@ function updateEatPosition(newPosition) {
 }
 updateEatPosition(eat);
 
+
 // Generate a new eat
 function generateNewEat() {
-  level++;
-  const newX = randomNumber();
-  const newY = randomNumber();
+  level += 1;
+  showLevel.textContent = level; // update level
+  let random = Math.floor(Math.random() * 10);
+  const newX = random;
+  const newY = random;
   const newEat = `x${newX}-y${newY}`;
   updateEatPosition(newEat);
 }
@@ -90,6 +92,11 @@ function checkEat() {
     snake.push(lastPosition[1])
     generateNewEat();
   }
+}
+
+function checkBodyCut(){
+  let checkSnake = [...snake.slice(1)];
+  return checkSnake.includes(snake[0]);
 }
 
 // Movement snake
@@ -120,7 +127,7 @@ function moveSnake() {
     if (cell) cell.classList.add("bg-info");
   });
 
-  if (isOut(snake)) {
+  if (isOut(snake) || checkBodyCut()) {
     clearInterval(gameInterval);
     console.log("the snake is out");
     lastPosition.forEach(fill => {
@@ -129,8 +136,23 @@ function moveSnake() {
     });
     return;
   }
-
   checkEat();
 }
 
-let gameInterval = setInterval(moveSnake, 500);
+// start or pause btn
+let gameInterval = "";
+let startBtn = document.getElementById("start");
+let pauseBtn = document.getElementById("pause");
+startBtn.addEventListener("click", () => {
+  gameInterval = setInterval(moveSnake, 400); // start game
+  startBtn.classList.toggle("d-none");
+  pauseBtn.classList.toggle("d-none");
+})
+pauseBtn.addEventListener("click", () => {
+  startBtn.classList.toggle("d-none");
+  pauseBtn.classList.toggle("d-none");
+  clearInterval(gameInterval);
+})
+
+
+
