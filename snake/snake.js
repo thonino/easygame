@@ -17,8 +17,8 @@ for (let i = 0; i < 10; i++) {
   row[`row${i}`].forEach(item => {
     let colDiv = document.createElement("div"); // Column
     colDiv.id = "x" + i + "-y" + item;
-    colDiv.style.width = "40px";
-    colDiv.style.height = "40px";
+    colDiv.style.width = "35px";
+    colDiv.style.height = "35px";
     colDiv.style.backgroundColor = "#d6d8db";
     colDiv.style.marginRight = "1px";
     rowDiv.appendChild(colDiv);
@@ -27,7 +27,6 @@ for (let i = 0; i < 10; i++) {
 }
 
 // create the snake default
-let size = 2;
 let direction = "right";
 let snake = ["x5-y3", "x5-y2"];
 snake.forEach(fill => {
@@ -56,12 +55,14 @@ function isOut(position) {
 // eat default
 let eat = "x3-y6"; 
 let level = 1;
+let gameOverPosition = [];
+let lastEatPosition = [];
 
 // show level
 let showLevel = document.getElementById("level");
 showLevel.textContent = level;
 
-// Update food position
+// Update eat position
 function updateEatPosition(newPosition) {
   if (document.getElementById(eat)) {
     document.getElementById(eat).style.backgroundColor = "#d6d8db";
@@ -88,8 +89,8 @@ function generateNewEat() {
 // check if eat
 function checkEat() {
   if (snake[0] === eat) {
-    let lastPosition = [...snake];
-    snake.push(lastPosition[1])
+    lastEatPosition = [...snake];
+    snake.push(lastEatPosition[1])
     generateNewEat();
   }
 }
@@ -105,7 +106,7 @@ function moveSnake() {
     let cell = document.getElementById(fill);
     if (cell) cell.classList.remove("bg-info");
   });
-  let lastPosition = [...snake];
+  gameOverPosition = [...snake];
   snake = snake.map((item, index) => {
     let splitting = item.match(/\d+/g);
     let x = parseInt(splitting[0], 10);
@@ -116,7 +117,7 @@ function moveSnake() {
       if (direction === "up") x -= 1;
       if (direction === "down") x += 1;
     } else {
-      let prev = lastPosition[index - 1];
+      let prev = gameOverPosition[index - 1];
       return prev;
     }
     return "x" + x + "-y" + y;
@@ -130,10 +131,11 @@ function moveSnake() {
   if (isOut(snake) || checkBodyCut()) {
     clearInterval(gameInterval);
     console.log("the snake is out");
-    lastPosition.forEach(fill => {
+    gameOverPosition.forEach(fill => {
       let cell = document.getElementById(fill);
       if (cell) cell.classList.add("bg-danger");
     });
+    pauseBtn.classList.add("d-none");
     return;
   }
   checkEat();
@@ -144,7 +146,7 @@ let gameInterval = "";
 let startBtn = document.getElementById("start");
 let pauseBtn = document.getElementById("pause");
 startBtn.addEventListener("click", () => {
-  gameInterval = setInterval(moveSnake, 400); // start game
+  gameInterval = setInterval(moveSnake, 300); // start game
   startBtn.classList.toggle("d-none");
   pauseBtn.classList.toggle("d-none");
 })
@@ -153,6 +155,47 @@ pauseBtn.addEventListener("click", () => {
   pauseBtn.classList.toggle("d-none");
   clearInterval(gameInterval);
 })
+
+function newgame() {  
+  // reset level
+  level = 1;
+  showLevel.textContent = level;
+
+  // remove btn
+  startBtn.classList.remove("d-none");
+  pauseBtn.classList.add("d-none");
+
+  // delete gameOver's classes
+  gameOverPosition.forEach(fill => {
+    let cell = document.getElementById(fill);
+    if (cell) {
+      cell.classList.remove("bg-info", "bg-danger", "bg-secondary-light");  
+      cell.style.backgroundColor = "#d6d8db"; 
+    }
+  });
+
+  // Reset eat
+  if (document.getElementById(eat)) {
+    document.getElementById(eat).style.backgroundColor = "#d6d8db"; 
+  }
+
+  // Reset snake
+  eat = "x3-y6"; 
+  if (document.getElementById(eat)) {
+    document.getElementById(eat).style.backgroundColor = "#198754"; 
+  }
+
+  // reset directions
+  direction = "right";
+  snake = ["x5-y3", "x5-y2"];
+  snake.forEach(fill => {
+    let cell = document.getElementById(fill);
+    if (cell) { cell.classList.add("bg-info"); }
+  });
+  gameOverPosition = [];
+}
+
+
 
 
 

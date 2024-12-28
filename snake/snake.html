@@ -11,7 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="snake.js" defer></script>
   </head>
-  <body class="text-center bg-light">
+  <body class="text-center bg-secondary-dark">
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
       <div class="container-fluid">
@@ -46,48 +46,53 @@
     </nav>
 
     <!-- Main Content -->
-    <main class="d-flex flex-column align-items-center justify-content-center mx-4">
-      <h1 class="fw-bold text-secondary m-0 mt-2 ">Snake</h1>
-      <div  class="m-2 "  onclick="newgame()" >
-        <i class="bi bi-arrow-clockwise btn bg-primary text-light">
+    <main class="d-flex flex-column align-items-center justify-content-center m-0">
+      <h1 class="fw-bold text-info m-0 mt-2">Snake</h1>
+      <div  class="m-0"  onclick="newgame()" >
+        <i class="bi bi-arrow-clockwise btn bg-primary text-light m-0 mt-2">
           New game
         </i> 
       </div>
-      <p class="h1 fw-bold text-secondary  mb-3"> 
-        Level : 
-        <span id="level"></span>
-      </p>
+      <!-- Score -->
+      <p class="h3 fw-bold text-secondary m-0 mt-2">Level : <span id="level"></span></p>
       <!-- Table -->
-      <div id="table" class="shadow"></div>
-      <!-- Direction btn -->
-      <div class="d-flex align-items-end mt-4 gap-1 m-0 p-0">
-        <div>
-          <button onclick="changeDirection('left')" class="btn btn-info btn-lg">
-            <i class="bi bi-arrow-left-short text-light h2"></i>
-          </button>
+      <div id="table" class="shadow bg-light mt-2"></div>
+      <div class="d-flex flex-column mt-2">
+        <!-- Direction btn -->
+        <div class="d-flex align-items-end gap-2">
+          <div>
+            <button onclick="changeDirection('left')" class="btn btn-info btn-lg">
+              <i class="bi bi-arrow-left-short text-light h2"></i>
+            </button>
+          </div>
+          <div class="d-flex flex-column gap-2">
+            <button onclick="changeDirection('up')" class="btn btn-info btn-lg">
+              <i class="bi bi-arrow-up-short text-light h2"></i>
+            </button>
+            <button onclick="changeDirection('down')" class="btn btn-info btn-lg">
+              <i class="bi bi-arrow-down-short text-light h2"></i>
+            </button>
+          </div>
+          <div>
+            <button onclick="changeDirection('right')" class="btn btn-info btn-lg">
+              <i class="bi bi-arrow-right-short text-light h2"></i>
+            </button>
+          </div>
         </div>
-        <div class="d-flex flex-column gap-1">
-          <button onclick="changeDirection('up')" class="btn btn-info btn-lg">
-            <i class="bi bi-arrow-up-short text-light h2"></i>
-          </button>
-          <button onclick="changeDirection('down')" class="btn btn-info btn-lg">
-            <i class="bi bi-arrow-down-short text-light h2"></i>
-          </button>
-        </div>
-        <div>
-          <button onclick="changeDirection('right')" class="btn btn-info btn-lg">
-            <i class="bi bi-arrow-right-short text-light h2"></i>
-          </button>
+        <!-- Start and pause btn -->
+        <div class="d-flex justify-content-center mt-2">
+          <div>
+            <button id="start" class="btn btn-success fs-3 fw-light px-2 p-0"> 
+              Start !
+            </button>
+          </div>
+            <div>
+            <button id="pause" class="btn btn-warning fs-3 fw-light px-2 p-0 d-none"> 
+              <i class="bi bi-pause "></i>Pause 
+            </button>
+          </div>
         </div>
       </div>
-      <!-- Start and pause btn -->
-      <button id="start"class="btn btn-success fs-3 fw-light mt-3 py-0"> 
-        Start !
-      </button>
-      <button id="pause"  class="btn btn-warning mt-3 fs-3 fw-light py-0 d-none"> 
-        <i class="bi bi-pause "></i>Pause 
-      </button>
-
     </main>
 
     <!-- Footer -->
