@@ -34,6 +34,16 @@ snake.forEach(fill => {
   if (cell) cell.classList.add("bg-info");
 });
 
+
+  document.addEventListener("keydown", (event) => {
+  switch (event.keyCode) {
+    case 37: changeDirection("left"); break;
+    case 38: changeDirection("up"); break;
+    case 40: changeDirection("down"); break;
+    case 39: changeDirection("right"); break;
+  }
+});
+
 // direction buttons and forbid revers
 function changeDirection(value) {
   let reverse = { left: "right", up: "down", down: "up", right: "left" };
@@ -41,7 +51,7 @@ function changeDirection(value) {
     console.log(`direction ${value} error`);
     return;
   }
-  direction = value;
+  setTimeout(() => { direction = value; }, 100);
 }
 
 // map limit
@@ -52,17 +62,23 @@ function isOut(position) {
   });
 }
 
+
 // eat default
 let eat = "x3-y6"; 
-let level = 1;
+let score = 0;
+let topScore = 0;
 let gameOverPosition = [];
 let lastEatPosition = [];
 
-// show level
-let showLevel = document.getElementById("level");
-showLevel.textContent = level;
 
-// Update eat position
+// show score and topScore
+let showScore = document.getElementById("score");
+showScore.textContent = score;
+
+let showTopScore = document.getElementById("topScore");
+showTopScore.textContent = topScore;
+
+// update eat position
 function updateEatPosition(newPosition) {
   if (document.getElementById(eat)) {
     document.getElementById(eat).style.backgroundColor = "#d6d8db";
@@ -74,11 +90,14 @@ function updateEatPosition(newPosition) {
 }
 updateEatPosition(eat);
 
-
-// Generate a new eat
+// generate a new eat
 function generateNewEat() {
-  level += 1;
-  showLevel.textContent = level; // update level
+  score += 1;
+  showScore.textContent = score; // update score
+  if(score > topScore) {
+    topScore = score ;
+    showTopScore.textContent = topScore; // update topScore
+  } 
   let random = Math.floor(Math.random() * 10);
   const newX = random;
   const newY = random;
@@ -94,7 +113,6 @@ function checkEat() {
     generateNewEat();
   }
 }
-
 function checkBodyCut(){
   let checkSnake = [...snake.slice(1)];
   return checkSnake.includes(snake[0]);
@@ -129,37 +147,74 @@ function moveSnake() {
   });
 
   if (isOut(snake) || checkBodyCut()) {
+    gameOver = true
     clearInterval(gameInterval);
     console.log("the snake is out");
     gameOverPosition.forEach(fill => {
       let cell = document.getElementById(fill);
       if (cell) cell.classList.add("bg-danger");
     });
+    // hide pause btn
     pauseBtn.classList.add("d-none");
+
+    // show gameOver modal
+    
+    let showTopScore = document.getElementById("showTopScore");
+    const showGameOverModal = document.getElementById("gameOverModal");
+    const modal = new bootstrap.Modal(showGameOverModal);
+    setTimeout(() => {
+      document.getElementById('endScore').textContent = score;
+      let curentScore = Number(score);
+      if (curentScore === Number(topScore)) {
+        showTopScore.classList.remove("d-none");
+      }
+      modal.show();
+    }, 750);
+
     return;
   }
   checkEat();
 }
 
-// start or pause btn
+// start and pause with btn
+let gameOver = false;
+let gaming = false;
 let gameInterval = "";
 let startBtn = document.getElementById("start");
 let pauseBtn = document.getElementById("pause");
-startBtn.addEventListener("click", () => {
-  gameInterval = setInterval(moveSnake, 300); // start game
-  startBtn.classList.toggle("d-none");
-  pauseBtn.classList.toggle("d-none");
-})
-pauseBtn.addEventListener("click", () => {
-  startBtn.classList.toggle("d-none");
-  pauseBtn.classList.toggle("d-none");
-  clearInterval(gameInterval);
-})
 
+// toggle function
+function toggleGame() {
+  if (gaming) {
+    gaming = false;
+    startBtn.classList.remove("d-none");
+    pauseBtn.classList.add("d-none");
+    clearInterval(gameInterval);
+  } else {
+    gaming = true;
+    gameInterval = setInterval(moveSnake, 300);
+    startBtn.classList.add("d-none");
+    pauseBtn.classList.remove("d-none");
+  }
+}
+
+// with buttons
+startBtn.addEventListener("click", toggleGame);
+pauseBtn.addEventListener("click", toggleGame);
+
+// with keyCode "Espace: 32" only gameOver = false
+document.addEventListener("keydown", (event) => {
+  if (event.keyCode === 32 && !gameOver) {   toggleGame(); }
+});
+
+// new game
 function newgame() {  
-  // reset level
-  level = 1;
-  showLevel.textContent = level;
+  let showTopScore = document.getElementById("showTopScore");
+  showTopScore.classList. add("d-none");
+  gameOver = false;
+  gaming = false;
+  score = 0;
+  showScore.textContent = score;
 
   // remove btn
   startBtn.classList.remove("d-none");
@@ -167,6 +222,15 @@ function newgame() {
 
   // delete gameOver's classes
   gameOverPosition.forEach(fill => {
+    let cell = document.getElementById(fill);
+    if (cell) {
+      cell.classList.remove("bg-info", "bg-danger", "bg-secondary-light");  
+      cell.style.backgroundColor = "#d6d8db"; 
+    }
+  });
+
+  // delete lastEatPositions classes
+  snake.forEach(fill => {
     let cell = document.getElementById(fill);
     if (cell) {
       cell.classList.remove("bg-info", "bg-danger", "bg-secondary-light");  
@@ -195,7 +259,7 @@ function newgame() {
   gameOverPosition = [];
 }
 
-
-
-
-
+// new game with keycode
+document.addEventListener("keydown", (event) => {
+  if (event.keyCode === 13 ) { newgame() }
+});
