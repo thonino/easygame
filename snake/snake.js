@@ -146,6 +146,7 @@ function moveSnake() {
     if (cell) cell.classList.add("bg-info");
   });
 
+  // gameOver
   if (isOut(snake) || checkBodyCut()) {
     gameOver = true
     clearInterval(gameInterval);
@@ -154,11 +155,10 @@ function moveSnake() {
       let cell = document.getElementById(fill);
       if (cell) cell.classList.add("bg-danger");
     });
-    // hide pause btn
-    pauseBtn.classList.add("d-none");
+    
+    pauseBtn.classList.add("d-none"); // hide pause btn
 
     // show gameOver modal
-    
     let showTopScore = document.getElementById("showTopScore");
     const showGameOverModal = document.getElementById("gameOverModal");
     const modal = new bootstrap.Modal(showGameOverModal);
@@ -169,8 +169,10 @@ function moveSnake() {
         showTopScore.classList.remove("d-none");
       }
       modal.show();
-    }, 750);
-
+      setTimeout(() => {
+        newgame()
+      }, 500);
+    }, 500);
     return;
   }
   checkEat();
@@ -204,13 +206,15 @@ pauseBtn.addEventListener("click", toggleGame);
 
 // with keyCode "Espace: 32" only gameOver = false
 document.addEventListener("keydown", (event) => {
-  if (event.keyCode === 32 && !gameOver) {   toggleGame(); }
+  if (event.keyCode === 32 && !gameOver) {   
+    toggleGame();   
+    let showTopScore = document.getElementById("showTopScore");
+    showTopScore.classList. add("d-none"); 
+  }
 });
 
 // new game
 function newgame() {  
-  let showTopScore = document.getElementById("showTopScore");
-  showTopScore.classList. add("d-none");
   gameOver = false;
   gaming = false;
   score = 0;
