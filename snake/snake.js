@@ -62,14 +62,12 @@ function isOut(position) {
   });
 }
 
-
 // eat default
 let eat = "x3-y6"; 
 let score = 0;
 let topScore = 0;
 let gameOverPosition = [];
 let lastEatPosition = [];
-
 
 // show score and topScore
 let showScore = document.getElementById("score");
