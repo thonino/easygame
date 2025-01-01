@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>buble</title>
+    <title>buble killer</title>
     <link rel="stylesheet" href="buble.css">
     <link rel="stylesheet" href="../colorExtend.css">
     <link
@@ -58,21 +58,35 @@
     </nav>
     <!-- Main Content -->
     <main class="d-flex flex-column align-items-center justify-content-center m-0">
-      <h1 class="fw-bold text-info m-0 mt-2 mb-2">Buble</h1>
+      <h1 class=" text-info fw-light m-0 mt-2 mb-2">Buble Killer</h1>
+      <p class="text-success-light h1"> 
+        <i class="bi bi-alarm"></i> 
+        <spans id="showTimer"> </spans>
+      </p>
 
       <!-- container -->
       <div id="screen" class="container">
         <!-- Screen -->
         <div 
           id="screen" 
-          class="bg-light w-100 mb-3 position-relative overflow-auto overflow-hidden rounded-4 shadow " 
-          style="height: 600px;"
+          class="bg-secondary-light w-100 mb-3 position-relative overflow-auto overflow-hidden rounded-4 shadow" 
+          style="height: 500px;"
         >
-          <p id="showScore" class="display-1 fw-light text-secondary"></p>
-          <span id="target"></span>
+          <div class="d-flex justify-content-around align-items-center mt-2 m-0 p-0">
+            <p class="h3 fw-light text-light bg-secondary m-0 p-2 rounded-4">
+              <i class="bi bi-person-circle"></i> Score : 
+              <span id="showScore" ></span> 
+            </p>
+            <p  class="h3 fw-light text-light bg-warning-dark m-0 p-2 rounded-4">
+              <i class="bi bi-trophy"></i> 
+              <span id="showTopScore"></span> 
+            </p>
+          </div>
+          <span id="targetBuble"></span>
+
         </div>
         <!-- Button -->
-        <button id="start" class="btn btn-success fs-3 fw-light px-2 p-0"> 
+        <button id="start" class="btn btn-info btn-lg fs-3 fw-light px-3 p-0"> 
           Start !
         </button>
       </div>

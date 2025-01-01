@@ -1,11 +1,24 @@
 // Score
 let showScore = document.getElementById("showScore");
+let showTopScore = document.getElementById("showTopScore");
+let showTimer = document.getElementById("showTimer");
 let score = 0;
+let topScore =  0;
+let timer = 3;
 showScore.textContent = score;
+showTopScore.textContent = topScore;
+showTimer.textContent = timer; 
 
 function addScore(n, element) {
   score += Number(n);
   showScore.textContent = score;
+  function syncTopScore() {
+    if (score > topScore) {
+      topScore = score;
+      showTopScore.textContent = topScore;
+    }
+  }
+  syncTopScore()
 
   // Transformer en "+1" lors du clic
   element.textContent = "+1";
@@ -37,7 +50,7 @@ let addElement = () => {
   let size = Math.floor(Math.random() * 61) + 80; // size random (80 150)
   let distance = Math.floor(Math.random() * 201) + 300; // distance random (300 500)
 
-  const target = document.getElementById("target");
+  const target = document.getElementById("targetBuble");
   let newSpan = document.createElement("span");
   newSpan.onclick = function () {
     addScore(1, this);
@@ -50,7 +63,7 @@ let addElement = () => {
   newSpan.style.position = "absolute";
   newSpan.style.bottom = "0";
   newSpan.style.opacity = 0.9;
-  newSpan.style.transition = "transform 1.5s ease";
+  newSpan.style.transition = "transform 2.5s ease";
 
   newSpan.classList.add(colorRandom, "rounded-circle", "shadow");
   target.appendChild(newSpan);
@@ -58,19 +71,33 @@ let addElement = () => {
   // Translate
   setTimeout(() => {
     newSpan.style.transform = `translate(${angle}px, -${distance}px)`; // translate
-  }, 450);
+  }, 250);
 
   // Supprimer l'élément après un certain temps
   setTimeout(() => {
     if (newSpan.parentNode) {
       target.removeChild(newSpan);
     }
-  }, 1500);
+  }, 2000);
 };
 
-// start game
+// Start game
 let start = document.getElementById("start");
 start.addEventListener("click", () => {
-  setInterval(addElement, 150);
+  score = 0;
+  showScore.textContent = score;
+  let playInterval = setInterval(addElement, 300); // start
+
+  // Show timer
+  for(let i = timer ; i >= 0 ; i--){
+    setTimeout(() => {
+      showTimer.textContent = i;
+      if(i === 0){ 
+        clearInterval(playInterval); 
+
+
+      }
+    }, (timer - i) *1000);
+  }
 })
 
