@@ -167,6 +167,11 @@ function moveSnake() {
         showTopScore.classList.remove("d-none");
       }
       modal.show();
+      
+      setTimeout(() => {
+        modal.hide();
+      }, 4000);
+
       setTimeout(() => {
         newgame()
       }, 500);

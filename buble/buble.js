@@ -4,10 +4,11 @@ let showTopScore = document.getElementById("showTopScore");
 let showTimer = document.getElementById("showTimer");
 let score = 0;
 let topScore =  0;
-let timer = 3;
+let timer = 5;
 showScore.textContent = score;
 showTopScore.textContent = topScore;
 showTimer.textContent = timer; 
+
 
 function addScore(n, element) {
   score += Number(n);
@@ -56,6 +57,7 @@ let addElement = () => {
     addScore(1, this);
   };
 
+
   // Styles appliqués
   newSpan.style.width = size + "px";
   newSpan.style.height = size + "px";
@@ -81,23 +83,54 @@ let addElement = () => {
   }, 2000);
 };
 
-// Start game
-let start = document.getElementById("start");
-start.addEventListener("click", () => {
-  score = 0;
-  showScore.textContent = score;
+// Start
+let gameRunning = false; 
+function gameLogic() {
+  if (gameRunning) return;  gameRunning = true;
   let playInterval = setInterval(addElement, 300); // start
-
-  // Show timer
-  for(let i = timer ; i >= 0 ; i--){
+  for (let i = timer; i >= 0; i--) {
     setTimeout(() => {
       showTimer.textContent = i;
-      if(i === 0){ 
-        clearInterval(playInterval); 
-
-
+      if (i === 0) {
+        clearInterval(playInterval); // End
+        let showTopScoreEndGame = document.getElementById("showTopScoreEndGame");
+        let showEndScore = document.getElementById("showEndScore");
+        const showEndGameModal = document.getElementById("showEndGameModal");
+        const modal = new bootstrap.Modal(showEndGameModal);
+        // Show modal
+        setTimeout(() => {
+          modal.show();
+          showEndScore.textContent = score;
+          setTimeout(() => {
+            modal.hide();
+            gameRunning = false; 
+          }, 4000);
+        }, 2000);
+        // Show topScore
+        if (Number(score) === Number(topScore)) {
+          showTopScoreEndGame.classList.remove("d-none");
+          console.log("score : " + score + " topScore : " + topScore);
+        } else {
+          showTopScoreEndGame.classList.add("d-none");
+          console.log("score : " + score + " topScore : " + topScore);
+        }
+        // Reset 
+        setTimeout(() => {
+          score = 0;
+          showScore.textContent = score;
+          showTimer.textContent = 5;
+        }, 2000);
       }
-    }, (timer - i) *1000);
+    }, (timer - i) * 1000);
   }
-})
+}
+
+// Gestion des événements
+document.getElementById("start").addEventListener("click", gameLogic);
+document.addEventListener("keydown", (event) => {
+  if (event.keyCode === 32) { // Barre d'espace
+    console.log("keydown 32");
+    gameLogic();
+  }
+});
 
