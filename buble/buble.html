@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>buble</title>
+    <title>buble killer</title>
     <link rel="stylesheet" href="buble.css">
     <link rel="stylesheet" href="../colorExtend.css">
     <link
@@ -58,21 +58,34 @@
     </nav>
     <!-- Main Content -->
     <main class="d-flex flex-column align-items-center justify-content-center m-0">
-      <h1 class="fw-bold text-info m-0 mt-2 mb-2">Buble</h1>
-
+      <h1 class=" text-info fw-bold m-0 mt-2 mb-2">Buble Killer</h1>
+      <p class="text-success-light h1 m-0 "> 
+        <i class="bi bi-alarm"></i> 
+        <spans id="showTimer"> </spans>
+      </p>
+      
+      <!-- Score -->
+      <div class="d-flex justify-content-around m-0 mb-2 w-100" >
+        <div class="h3 fw-bold text-info m-0">
+          Score : <span id="showScore" class="text-info-light"></span>
+        </div>
+        <div class="h3 fw-bold text-warning m-0 ">
+          <i class="bi bi-trophy"></i> : 
+          <span id="showTopScore" class="text-warning-light"></span>
+        </div>
+      </div>
       <!-- container -->
       <div id="screen" class="container">
         <!-- Screen -->
         <div 
           id="screen" 
-          class="bg-light w-100 mb-3 position-relative overflow-auto overflow-hidden rounded-4 shadow " 
-          style="height: 600px;"
+          class="bg-secondary-light w-100 mb-2 position-relative overflow-auto overflow-hidden rounded-4 shadow" 
+          style="height: 480px;"
         >
-          <p id="showScore" class="display-1 fw-light text-secondary"></p>
-          <span id="target"></span>
+          <span id="targetBuble"></span>
         </div>
         <!-- Button -->
-        <button id="start" class="btn btn-success fs-3 fw-light px-2 p-0"> 
+        <button id="start" class="btn btn-info btn-lg fs-3 fw-light px-3 p-0"> 
           Start !
         </button>
       </div>
@@ -86,21 +99,22 @@
     </footer>
     
     <!-- End Game Modal -->
-    <div class="modal" id="gameOverModal" tabindex="-1">
+    <div class="modal" id="showEndGameModal" tabindex="-1">
       <div class="modal-dialog d-flex justify-content-center align-items-center min-vh-100 my-0">
         <div class="modal-content bg-transparent border-0 gap-2">
-          <p class="text-info-light display-1 fw-bold text-center m-0">Scores</p>
-          <p class="text-info h1 fw-light text-center m-2"> 
-            <spam id="endScore" class="text-light"> </spam>
-          </p>
-          <p id="showTopScore" class=" display-1 fw-bold text-center m-0">
-            <i class="bi bi-trophy text-warning"></i> 
-            <span class="bg-warning h5 px-2 pb-1 rounded">Top score </span>
-          </p>
-          <div>
+          <div class="d-flex justify-content-center align-items-center gap-4">
+            <p class="text-info-light display-1 text-center">Time out</p>
             <button class="btn" data-bs-dismiss="modal">
               <i class="bi bi-x-lg h1 text-secondary"></i>
             </button>
+          </div>
+          <p class="text-info h1 fw-light text-center mb-4 m-0"> 
+            <i class="bi bi-person-circle"></i> 
+            Score : <spam id="showEndScore" class="text-light"> </spam>
+          </p>
+          <div id="showTopScoreEndGame" class="d-none text-center m-0 ">
+            <i class="bi bi-trophy display-1 fw-bold text-warning"></i> 
+            <span class="bg-warning h5 px-2 pb-1 rounded">Top score </span>
           </div>
         </div>
       </div>

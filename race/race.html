@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>snake</title>
-    <link rel="stylesheet" href="snake.css">
+    <title>race</title>
+    <link rel="stylesheet" href="race.css">
     <link rel="stylesheet" href="../colorExtend.css">
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
@@ -21,7 +21,7 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
-    <script defer src="snake.js"></script>
+    <script defer src="race.js"></script>
   </head>
   <body class="text-center bg-secondary-dark">
     <!-- Navigation Bar -->
@@ -56,63 +56,33 @@
         </div>
       </div>
     </nav>
-
     <!-- Main Content -->
-    <main class="d-flex flex-column align-items-center justify-content-center m-0">
-      <h1 class="fw-bold text-info m-0 mt-2 mb-1">Snake</h1>
-      <div  class="m-0"  onclick="newgame()" >
-        <i class="bi bi-arrow-clockwise btn bg-primary text-light m-0 mt-2">
-          New
-        </i> 
-      </div>
+    <main class="d-flex flex-column align-items-center justify-content-center m-0 mx-2">
+      <h1 class=" text-info fw-bold m-0 mt-2 mb-2">Race </h1>
+      
       <!-- Score -->
-      <div class="d-flex justify-content-between m-0 mt-1" style="width: 320px;" >
+      <div class="d-flex justify-content-around m-0 mb-2 w-100" >
         <div class="h3 fw-bold text-info m-0">
-          Score : <span id="score" class="text-info-light"></span>
+          Score : <span id="showScore" class="text-info-light"></span>
         </div>
         <div class="h3 fw-bold text-warning m-0 ">
           <i class="bi bi-trophy"></i> : 
-          <span id="topScore" class="text-warning-light"></span>
+          <span id="showTopScore" class="text-warning-light"></span>
         </div>
-        
       </div>
-      <!-- Table -->
-      <div id="table" class="shadow bg-light mt-2 mb-1"></div>
-      <div class="d-flex flex-column mt-2 mb-1">
-        <!-- Direction btn -->
-        <div class="d-flex align-items-end gap-2 mb-1">
-          <div>
-            <button onclick="changeDirection('left')" class="btn bg-info-dark btn-lg">
-              <i class="bi bi-arrow-left-short text-info h2"></i>
-            </button>
-          </div>
-          <div class="d-flex flex-column gap-2">
-            <button onclick="changeDirection('up')" class="btn bg-info-dark btn-lg">
-              <i class="bi bi-arrow-up-short text-info h2"></i>
-            </button>
-            <button onclick="changeDirection('down')" class="btn bg-info-dark btn-lg">
-              <i class="bi bi-arrow-down-short text-info h2"></i>
-            </button>
-          </div>
-          <div>
-            <button onclick="changeDirection('right')" class="btn bg-info-dark btn-lg">
-              <i class="bi bi-arrow-right-short text-info h2"></i>
-            </button>
-          </div>
+
+      <!-- container -->
+        <!-- Screen -->
+        <div 
+          id="screen" 
+          class="bg-secondary-light w-100 rounded-4 shadow mb-2" 
+          style="height: 480px;"
+        >
         </div>
-        <!-- Start and pause btn -->
-        <div class="d-flex justify-content-center mt-2">
-          <div>
-            <button id="start" class="btn btn-info fs-3 fw-light px-2 p-0"> 
-              Start !
-            </button>
-          </div>
-            <div>
-            <button id="pause" class="btn btn-warning fs-3 fw-light px-2 p-0 d-none"> 
-              <i class="bi bi-pause "></i>Pause 
-            </button>
-          </div>
-        </div>
+        <!-- Button -->
+        <button id="start" class="btn btn-info btn-lg fs-3 fw-light px-3 p-0"> 
+          Start !
+        </button>
       </div>
     </main>
 
@@ -123,23 +93,24 @@
       </div>
     </footer>
     
-    <!-- GameOver Modal -->
-    <div class="modal" id="gameOverModal" tabindex="-1">
+    <!-- End Game Modal -->
+    <div class="modal" id="showEndGameModal" tabindex="-1">
       <div class="modal-dialog d-flex justify-content-center align-items-center min-vh-100 my-0">
         <div class="modal-content bg-transparent border-0 gap-2">
-          <div class="d-flex justify-content-center align-items-center gap-2">
-            <p class=" text-info-light"> <span class="display-1">Game Over</span></p>
+          <div class="d-flex justify-content-center align-items-center gap-4">
+            <p class="text-info-light display-1 text-center">Time out</p>
             <button class="btn" data-bs-dismiss="modal">
               <i class="bi bi-x-lg h1 text-secondary"></i>
             </button>
           </div>
-          <p class="text-info h1 fw-light text-center mb-4 m-0"> Score : 
-            <spam id="endScore" class="text-light"> </spam>
+          <p class="text-info h1 fw-light text-center mb-4 m-0"> 
+            <i class="bi bi-person-circle"></i> 
+            Score : <spam id="showEndScore" class="text-light"> </spam>
           </p>
-          <p id="showTopScore" class=" display-1 fw-bold text-center m-0 d-none">
-            <i class="bi bi-trophy text-warning"></i> 
+          <div id="showTopScoreEndGame" class="d-none text-center m-0 ">
+            <i class="bi bi-trophy display-1 fw-bold text-warning"></i> 
             <span class="bg-warning h5 px-2 pb-1 rounded">Top score </span>
-          </p>
+          </div>
         </div>
       </div>
     </div>
