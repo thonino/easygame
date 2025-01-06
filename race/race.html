@@ -59,36 +59,61 @@
     <!-- Main Content -->
     <main class="d-flex flex-column align-items-center justify-content-center m-0 mx-2">
       <h1 class=" text-info fw-bold m-0 mt-2 mb-2">Race </h1>
-      
       <!-- Score -->
-      <div class="d-flex justify-content-around m-0 mb-2 w-100" >
+      <div class="d-flex justify-content-center align-items-end m-0 mb-2 gap-3">
         <div class="h3 fw-bold text-info m-0">
-          Score : <span id="showScore" class="text-info-light"></span>
+          <i class="bi bi-flag-fill"></i> 
+          <span id="showScore" class="text-info-light">0 m</span>
         </div>
-        <div class="h3 fw-bold text-warning m-0 ">
+        <div class="fw-bold text-success-light m-0">
+          <i class="bi bi-gem"></i> : 
+          <span id="showLife" class="text-success-light"> 0 </span>
+        </div>
+        <div class="fw-bold text-warning m-0">
           <i class="bi bi-trophy"></i> : 
-          <span id="showTopScore" class="text-warning-light"></span>
+          <span id="showTopScore" class="text-warning-light"> 50 m</span>
         </div>
       </div>
-
       <!-- container -->
         <!-- Screen -->
-        <div 
-          id="screen" 
-          class="bg-secondary-light w-100 rounded-4 shadow mb-2" 
-          style="height: 480px;"
-        >
+        <div id="container" class="d-flex mb-2" > 
+          <div id="car1" class="position-absolute bottom-0 mb-2" >
+            <img src="../img/car1.png"  alt="Car">
+          </div>
+          <div 
+            class="sidewalk bg-success rounded-start-3 gap-5" 
+            style="width: 38px"
+          ></div>
+          <div id="road-1" class="bg-info-dark"  style="width: 90px"></div> <!-- road 1  -->
+          <div class="roadLines bg-info-dark"></div>        
+          <div id="road-2" class="bg-info-dark"  style="width: 90px"></div> <!-- road 2  -->    
+          <div class="roadLines bg-info-dark"></div>        
+          <div id="road-3" class="bg-info-dark"  style="width: 90px"></div> <!-- road 3  -->     
+          <div 
+            class="sidewalk bg-success rounded-end-3 gap-5" 
+            style="width: 38px"
+          ></div>
         </div>
-        <!-- Button -->
-        <button id="start" class="btn btn-info btn-lg fs-3 fw-light px-3 p-0"> 
+
+      <!-- Buttons -->
+      <div class="d-flex  gap-4">
+        <button id="start" class="btn btn-info btn-lg fs-3 fw-light px-3 p-0" > 
           Start !
         </button>
+        <div class="d-flex gap-2">
+          <button onclick="turnOn('left')" class="btn bg-info-dark btn-lg">
+            <i class="bi bi-arrow-left-short text-info h2"></i>
+          </button>
+          <button onclick="turnOn('right')" class="btn bg-info-dark btn-lg">
+            <i class="bi bi-arrow-right-short text-info h2"></i>
+          </button>
+        </div>
       </div>
     </main>
 
     <!-- Footer -->
     <footer class="container-fluid position-fixed bottom-0  p-0">
-      <div class="bg-dark text-light container-fluid text-center p-4">
+      <div class="bg-dark text-light container-fluid text-center p-2">
         <p class="mb-0">&copy; 2024 <strong>EasyGame</strong> Tous droits réservés.</p>
       </div>
     </footer>

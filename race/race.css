@@ -1,0 +1,29 @@
+#container {
+    height: 560px;
+    width: 340px;
+    overflow: hidden;
+    position: relative;
+}
+
+#car1 {
+    left: 131px;
+    transition: transform 0.3s ease;
+}
+
+.sidewalk {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.roadLines {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.move {
+    transition: transform 0.1s ease-in-out; /* Transition plus rapide */
+}
