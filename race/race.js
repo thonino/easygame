@@ -9,8 +9,8 @@ let roadHeight = 1000; // Hauteur totale de la route
 let visibleHeight = 560; // Hauteur visible dans le conteneur
 let roadOffset = 0; // Décalage pour les lignes centrales
 let sidewalkOffset = 0; // Décalage pour les lignes de trottoir
+let speed = 6; // Vitesse de défilement des lignes (plus grand = plus rapide)
 
-// Sélections
 const sidewalk = document.querySelectorAll(".sidewalk");
 const roadLines = document.querySelectorAll(".roadLines");
 
@@ -47,7 +47,7 @@ function turnOn(direction) {
 function createSidewalkLines() {
   sidewalk.forEach((item) => {
     const sidewalkLine = document.createElement("div");
-    sidewalkLine.style.width = "10px";
+    sidewalkLine.style.width = "15px";
     sidewalkLine.style.height = "20px";
     sidewalkLine.style.position = "absolute";
     sidewalkLine.style.top = `${sidewalkOffset}px`;
@@ -77,7 +77,7 @@ function updateRoad() {
     if (currentTop > visibleHeight) {
       element.remove(); // Supprime les lignes dépassées
     } else {
-      element.style.top = `${currentTop + 10}px`; // Fait défiler les lignes
+      element.style.top = `${currentTop + speed}px`; // Fait défiler les lignes selon la vitesse
     }
   });
 
@@ -99,30 +99,25 @@ function extendRoad() {
 }
 
 // Fonction principale pour démarrer le jeu
-function drive() {
+function startGameFunction() {
   if (startGame) return; // Empêche plusieurs démarrages
   startGame = true;
   extendRoad(); // Étend la route au démarrage du jeu
   console.log("Game started!");
 
-  setInterval(updateRoad, 50); // Défilement régulier de la route
+  gameLoop(); // Démarre la boucle d'animation
 }
 
-let gameInterval; // Déclare la variable globalement
-
-// Fonction principale pour démarrer le jeu
-function drive() {
-  if (startGame) return; // Empêche plusieurs démarrages
-  startGame = true;
-  extendRoad(); // Étend la route au démarrage du jeu
-  console.log("Game started!");
-
-  gameInterval = setInterval(updateRoad, 35); // Défilement régulier de la route
+// Fonction de mise à jour régulière avec `requestAnimationFrame` pour fluidité
+function gameLoop() {
+  updateRoad(); // Mise à jour de la route
+  if (startGame) {
+    requestAnimationFrame(gameLoop); // Appel récursif pour un défilement fluide
+  }
 }
 
-// Clean up game intervals when stopping
-function stopGame() {
-  clearInterval(gameInterval); // Arrête l'intervalle de mise à jour de la route
+// Fonction pour arrêter le jeu
+function stopGameFunction() {
   startGame = false;
   console.log("Game paused!");
 }
@@ -131,9 +126,18 @@ function stopGame() {
 document.addEventListener("keydown", (event) => {
   if (event.keyCode === 32) { // Barre d'espace pour démarrer/pauser
     if (startGame) {
-      stopGame(); // Si le jeu est déjà lancé, on le met en pause
+      stopGameFunction(); // Si le jeu est déjà lancé, on le met en pause
     } else {
-      drive(); // Si le jeu est en pause, on le démarre
+      startGameFunction(); // Si le jeu est en pause, on le démarre
     }
+  }
+
+  // Changer la vitesse avec les touches de direction haut/bas
+  if (event.keyCode === 38) { // Flèche haut pour augmenter la vitesse
+    speed = Math.min(speed + 1, 20); // Limite la vitesse à 20
+    console.log("Speed up: " + speed);
+  } else if (event.keyCode === 40) { // Flèche bas pour réduire la vitesse
+    speed = Math.max(speed - 1, 1); // Limite la vitesse à 1
+    console.log("Speed down: " + speed);
   }
 });
