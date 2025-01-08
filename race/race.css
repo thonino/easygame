@@ -1,29 +1,40 @@
+
 #container {
-    height: 560px;
-    width: 340px;
-    overflow: hidden;
+    height: 560px; 
+    width: 340px; 
+    overflow: hidden; 
     position: relative;
 }
 
+
 #car1 {
+    /* left -> 42px; midle -> 131px ; right -> 220px */
     left: 131px;
     transition: transform 0.3s ease;
 }
 
+
 .sidewalk {
     display: flex;
-    align-items: center;
     justify-content: center;
-    flex-direction: column;
+    position: relative;
+    top: 0;
+    width: 38px;
+    height: 100%;
 }
+
+.sidewalk:first-child {
+left: 0;
+}
+
+.sidewalk:last-child {
+right: 0;
+}
+
+
 
 .roadLines {
     display: flex;
-    align-items: center;
     justify-content: center;
-    flex-direction: column;
 }
 
-.move {
-    transition: transform 0.1s ease-in-out; /* Transition plus rapide */
-}

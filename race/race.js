@@ -1,143 +1,121 @@
-const car1 = document.getElementById("car1");
+let car1 = document.getElementById("car1");
 
-// Variables globales
-const npx = 89; // Distance entre les positions
-let position = 2; // Position initiale (milieu)
-let currentOffset = 0; // Décalage horizontal
-let startGame = false; // Indique si le jeu a commencé
-let roadHeight = 1000; // Hauteur totale de la route
-let visibleHeight = 560; // Hauteur visible dans le conteneur
-let roadOffset = 0; // Décalage pour les lignes centrales
-let sidewalkOffset = 0; // Décalage pour les lignes de trottoir
-let speed = 6; // Vitesse de défilement des lignes (plus grand = plus rapide)
-
-const sidewalk = document.querySelectorAll(".sidewalk");
-const roadLines = document.querySelectorAll(".roadLines");
-
-// Gestion des directions (gauche/droite)
+// directions
 document.addEventListener("keydown", (event) => {
-  if (!startGame) return; // Ignore si le jeu n'a pas commencé
   switch (event.keyCode) {
-    case 37: // Flèche gauche
-      turnOn("left");
-      break;
-    case 39: // Flèche droite
-      turnOn("right");
-      break;
+    case 37: turnOn("left"); break;
+    case 39: turnOn("right"); break;
   }
 });
 
-// Met à jour la position de la voiture
+let npx = 89; 
+let position = 2; // default
+let currentOffset = 0; // current
+
+// update position
 function updatePosition() {
   car1.style.transform = `translateX(${currentOffset}px)`;
 }
 
-function turnOn(direction) {
-  if (direction === "right" && position < 3) {
+function turnOn(value) {
+  if (value === "right" && position < 3) {
     position++;
     currentOffset += npx;
-  } else if (direction === "left" && position > 1) {
+  } else if (value === "left" && position > 1) {
     position--;
     currentOffset -= npx;
   }
-  updatePosition();
+  updatePosition(); 
 }
 
-// Crée les lignes de trottoir
-function createSidewalkLines() {
-  sidewalk.forEach((item) => {
-    const sidewalkLine = document.createElement("div");
-    sidewalkLine.style.width = "15px";
-    sidewalkLine.style.height = "20px";
-    sidewalkLine.style.position = "absolute";
-    sidewalkLine.style.top = `${sidewalkOffset}px`;
-    sidewalkLine.classList.add("bg-success-dark", "rounded", "move");
-    item.appendChild(sidewalkLine);
-  });
+// start game
+let startGame = false;
+let isPaused = false; 
+let animationId;
+let speed = 5; 
+let lastTimestamp = 0; 
+
+// Sélectionne les trottoirs
+let sidewalks = document.querySelectorAll(".sidewalk");
+
+// Create sidewalk
+function createSidewalkLine(parent) {
+  let line = document.createElement("div");
+  line.style.width = "10px";
+  line.style.height = "20px";
+  line.style.position = "absolute";
+  line.style.top = "-20px"; 
+  line.classList.add("move", "bg-success-dark", "rounded");
+  parent.appendChild(line);
 }
 
-// Crée les lignes centrales de la route
-function createChildRoadLines() {
-  roadLines.forEach((line) => {
-    const roadLine = document.createElement("div");
-    roadLine.style.width = "1px";
-    roadLine.style.height = "200px";
-    roadLine.style.position = "absolute";
-    roadLine.style.top = `${roadOffset}px`;
-    roadLine.classList.add("bg-info-light", "move");
-    line.appendChild(roadLine);
-  });
+let roadLines = document.querySelectorAll(".roadLines");
+function createChildRoadLines(){
+  roadLines.forEach(parent => {
+    let childRoadLines = document.createElement("div");
+    childRoadLines.style.width = "1px";
+    childRoadLines.style.height = "75px";
+    childRoadLines.style.position = "absolute";
+    childRoadLines.style.top = "-75px"; 
+    childRoadLines.classList.add("bg-info-light", "move");
+  parent.appendChild(childRoadLines);
+  })
 }
 
-// Met à jour la route et ajoute dynamiquement des lignes
-function updateRoad() {
-  const moveElements = document.querySelectorAll(".move");
-  moveElements.forEach((element) => {
-    const currentTop = parseInt(element.style.top);
-    if (currentTop > visibleHeight) {
-      element.remove(); // Supprime les lignes dépassées
-    } else {
-      element.style.top = `${currentTop + speed}px`; // Fait défiler les lignes selon la vitesse
-    }
-  });
-
-  // Ajout de nouvelles lignes si nécessaire
-  roadOffset -= 300;
-  sidewalkOffset -= 120;
-  createSidewalkLines();
-  createChildRoadLines();
-}
-
-// Étend la hauteur des trottoirs et de la route
-function extendRoad() {
-  sidewalk.forEach((item) => {
-    item.style.height = `${roadHeight}px`;
-  });
-  roadLines.forEach((line) => {
-    line.style.height = `${roadHeight}px`;
-  });
-}
-
-// Fonction principale pour démarrer le jeu
-function startGameFunction() {
-  if (startGame) return; // Empêche plusieurs démarrages
-  startGame = true;
-  extendRoad(); // Étend la route au démarrage du jeu
-  console.log("Game started!");
-
-  gameLoop(); // Démarre la boucle d'animation
-}
-
-// Fonction de mise à jour régulière avec `requestAnimationFrame` pour fluidité
-function gameLoop() {
-  updateRoad(); // Mise à jour de la route
-  if (startGame) {
-    requestAnimationFrame(gameLoop); // Appel récursif pour un défilement fluide
+// Animation
+function animateSidewalkLines(timestamp) {
+  if (!startGame || isPaused) return; 
+  if (!lastTimestamp) lastTimestamp = timestamp;
+  let delta = timestamp - lastTimestamp;
+  if (delta > 16) { 
+    // sidewalk lines
+    sidewalks.forEach(parent => {
+      const sidewalkLines = parent.querySelectorAll(".move");
+      sidewalkLines.forEach(line => {
+        let currentTop = parseInt(line.style.top);
+        if (currentTop > 600) { line.remove(); } 
+        else { line.style.top = `${currentTop + speed}px`; } // move
+      });
+      if (!sidewalkLines.length || parseInt(sidewalkLines[sidewalkLines.length - 1].style.top) > 200) {
+        createSidewalkLine(parent);
+      }
+    });
+    // road lines
+    roadLines.forEach(parent => {
+      const roadLines = parent.querySelectorAll(".move");
+      roadLines.forEach(line => {
+        let currentTop = parseInt(line.style.top);
+        if (currentTop > 600) { line.remove(); } 
+        else { line.style.top = `${currentTop + speed}px`; } // move
+      });
+      if (!roadLines.length || parseInt(roadLines[roadLines.length - 1].style.top) > 75) {
+        createChildRoadLines(parent);
+      }
+    });
+    lastTimestamp = timestamp;
   }
+  animationId = requestAnimationFrame(animateSidewalkLines); 
 }
 
-// Fonction pour arrêter le jeu
-function stopGameFunction() {
-  startGame = false;
-  console.log("Game paused!");
-}
-
-// Ajout d'un écouteur pour démarrer et mettre en pause le jeu avec la barre d'espace
+// listening keyboard
 document.addEventListener("keydown", (event) => {
-  if (event.keyCode === 32) { // Barre d'espace pour démarrer/pauser
-    if (startGame) {
-      stopGameFunction(); // Si le jeu est déjà lancé, on le met en pause
-    } else {
-      startGameFunction(); // Si le jeu est en pause, on le démarre
-    }
-  }
-
-  // Changer la vitesse avec les touches de direction haut/bas
-  if (event.keyCode === 38) { // Flèche haut pour augmenter la vitesse
-    speed = Math.min(speed + 1, 20); // Limite la vitesse à 20
-    console.log("Speed up: " + speed);
-  } else if (event.keyCode === 40) { // Flèche bas pour réduire la vitesse
-    speed = Math.max(speed - 1, 1); // Limite la vitesse à 1
-    console.log("Speed down: " + speed);
-  }
+  if (event.keyCode === 32) { 
+    if (!startGame) { drive();startGame = true; } 
+    else { stopGame(); }
+  } 
 });
+
+// start
+function drive() { requestAnimationFrame(animateSidewalkLines); }
+
+// stop 
+function stopGame() {
+  if (isPaused) { 
+    isPaused = false; requestAnimationFrame(animateSidewalkLines);
+  } else {
+    isPaused = true; cancelAnimationFrame(animationId); 
+  }
+}
+
+
+

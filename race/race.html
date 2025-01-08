@@ -78,10 +78,10 @@
         <!-- Screen -->
         <div id="container" class="d-flex mb-2" > 
           <div id="car1" class="position-absolute bottom-0 mb-2" >
-            <img src="../img/car1.png"  alt="Car">
+            <img src="../img/car1.png" alt="Car">
           </div>
           <div 
-            class="sidewalk bg-success rounded-start-3 gap-5" 
+            class="sidewalk bg-success rounded-start-3 " 
             style="width: 38px"
           ></div>
           <div id="road-1" class="bg-info-dark"  style="width: 90px"></div> <!-- road 1  -->
@@ -90,25 +90,25 @@
           <div class="roadLines bg-info-dark"></div>        
           <div id="road-3" class="bg-info-dark"  style="width: 90px"></div> <!-- road 3  -->     
           <div 
-            class="sidewalk bg-success rounded-end-3 gap-5" 
+            class="sidewalk bg-success rounded-end-3"
             style="width: 38px"
           ></div>
         </div>
-
-      <!-- Buttons -->
-      <div class="d-flex  gap-4">
-        <button id="start" class="btn btn-info btn-lg fs-3 fw-light px-3 p-0" > 
-          Start !
-        </button>
-        <div class="d-flex gap-2">
-          <button onclick="turnOn('left')" class="btn bg-info-dark btn-lg">
-            <i class="bi bi-arrow-left-short text-info h2"></i>
+        <!-- Buttons -->
+        <div class="d-flex  gap-4">
+          <button id="start" class="btn btn-info btn-lg fs-3 fw-light px-3 p-0" > 
+            Start !
           </button>
-          <button onclick="turnOn('right')" class="btn bg-info-dark btn-lg">
-            <i class="bi bi-arrow-right-short text-info h2"></i>
-          </button>
+          <div class="d-flex gap-2">
+            <button onclick="turnOn('left')" class="btn bg-info-dark btn-lg">
+              <i class="bi bi-arrow-left-short text-info h2"></i>
+            </button>
+            <button onclick="turnOn('right')" class="btn bg-info-dark btn-lg">
+              <i class="bi bi-arrow-right-short text-info h2"></i>
+            </button>
+          </div>
         </div>
-      </div>
+      <!-- container : end -->
     </main>
 
     <!-- Footer -->
