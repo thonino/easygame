@@ -1,3 +1,10 @@
+
+let speed = 5; 
+let lastTimestamp = 0; 
+let npx = 89; 
+let position = 2; // default
+let currentOffset = 0; // current
+
 let car1 = document.getElementById("car1");
 
 // directions
@@ -8,16 +15,13 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-let npx = 89; 
-let position = 2; // default
-let currentOffset = 0; // current
-
 // update position
 function updatePosition() {
   car1.style.transform = `translateX(${currentOffset}px)`;
 }
 
 function turnOn(value) {
+  if(!startGame || isPaused) return;
   if (value === "right" && position < 3) {
     position++;
     currentOffset += npx;
@@ -27,13 +31,6 @@ function turnOn(value) {
   }
   updatePosition(); 
 }
-
-// start game
-let startGame = false;
-let isPaused = false; 
-let animationId;
-let speed = 5; 
-let lastTimestamp = 0; 
 
 // Sélectionne les trottoirs
 let sidewalks = document.querySelectorAll(".sidewalk");
@@ -97,24 +94,85 @@ function animateSidewalkLines(timestamp) {
   animationId = requestAnimationFrame(animateSidewalkLines); 
 }
 
-// listening keyboard
+// score
+let showScore = document.getElementById("showScore");
+showScore.textContent = "0 m";
+let score = 0;
+let scoreInterval;
+let isPaused = true; 
+let startGame = false; 
+let animationId;
+
+// update score
+function updateScore() {
+  score += 0.1;
+  showScore.textContent = score.toFixed(1) + " m";
+}
+
+// start update score
+function startUpdateScore() {
+  scoreInterval = setInterval(updateScore, 100);
+}
+
+// stop update score
+function stopScoreUpdate() {
+  clearInterval(scoreInterval);
+}
+
+// driving
+function drive() {
+  animationId = requestAnimationFrame(animateSidewalkLines);
+}
+
+// start and pause drive : keyboard
 document.addEventListener("keydown", (event) => {
-  if (event.keyCode === 32) { 
-    if (!startGame) { drive();startGame = true; } 
-    else { stopGame(); }
-  } 
+  if (event.keyCode === 32) {
+    toggleGame();
+  }
 });
 
-// start
-function drive() { requestAnimationFrame(animateSidewalkLines); }
+// start drive: btn
+let pause = document.getElementById("pause");
+let startBtn = document.getElementById("start");
 
-// stop 
-function stopGame() {
-  if (isPaused) { 
-    isPaused = false; requestAnimationFrame(animateSidewalkLines);
+// start drive : btn
+startBtn.addEventListener("click", toggleGame);
+
+// pause btn
+pause.addEventListener("click", toggleGame);
+
+// toggle game state
+function toggleGame() {
+  if (!startGame) {
+    // Démarrer le jeu
+    startGame = true;
+    isPaused = false;
+    drive();
+    startUpdateScore();
+    startBtn.classList.add("d-none");
+    pause.classList.remove("d-none");
+  } else if (isPaused) {
+    // Reprendre le jeu
+    isPaused = false;
+    drive();
+    startUpdateScore();
+    startBtn.classList.add("d-none");
+    pause.classList.remove("d-none");
   } else {
-    isPaused = true; cancelAnimationFrame(animationId); 
+    // pause game
+    isPaused = true;
+    cancelAnimationFrame(animationId);
+    stopScoreUpdate();
+    startBtn.classList.remove("d-none");
+    pause.classList.add("d-none");
   }
+}
+
+// stop
+function stopGame() {
+  isPaused = true;
+  cancelAnimationFrame(animationId);
+  stopScoreUpdate();
 }
 
 
