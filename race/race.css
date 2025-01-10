@@ -10,7 +10,7 @@
 #car1 {
     /* left -> 42px; midle -> 131px ; right -> 220px */
     left: 131px;
-    transition: transform 0.3s ease;
+    transition: transform 0.4s ease;
 }
 
 

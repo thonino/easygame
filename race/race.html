@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>race</title>
-    <link rel="icon" href="path/to/your/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="" type="image/x-icon">
     <link rel="stylesheet" href="race.css">
     <link rel="stylesheet" href="../colorExtend.css">
     <link
@@ -66,11 +66,11 @@
           <i class="bi bi-flag-fill"></i> 
           <span id="showScore" class="text-info-light"></span>
         </div>
-        <div class="fw-bold text-success-light m-0">
+        <div class="h3 fw-bold text-success-light m-0">
           <i class="bi bi-gem"></i> : 
-          <span id="showLife" class="text-success-light"> 0 </span>
+          <span id="showLifeScore" class="text-success-light"></span>
         </div>
-        <div class="fw-bold text-warning m-0">
+        <div class="h3 fw-bold text-warning m-0">
           <i class="bi bi-trophy"></i> : 
           <span id="showTopScore" class="text-warning-light"> 50 m</span>
         </div>
@@ -92,17 +92,17 @@
         </div>
         <!-- Buttons -->
         <div class="d-flex  gap-4">
-          <button id="start" class="btn btn-info btn-lg fs-3 fw-light px-3 p-0" > 
+          <button id="start" class="btn btn-info fs-3 fw-light px-3 p-0" > 
             <i class="bi bi-controller"></i> Start 
           </button>
-          <button id="pause" class="d-none btn btn-warning btn-lg fs-3 fw-light px-3 p-0" > 
+          <button id="pause" class="d-none btn btn-warning fs-3 fw-light px-3 p-0" > 
             <i class="bi bi-pause "></i>Pause 
           </button>
           <div class="d-flex gap-2">
-            <button onclick="turnOn('left')" class="btn bg-info-dark btn-lg">
+            <button onclick="turnOn('left')" class="btn bg-info-dark">
               <i class="bi bi-arrow-left-short text-info h2"></i>
             </button>
-            <button onclick="turnOn('right')" class="btn bg-info-dark btn-lg">
+            <button onclick="turnOn('right')" class="btn bg-info-dark">
               <i class="bi bi-arrow-right-short text-info h2"></i>
             </button>
           </div>
