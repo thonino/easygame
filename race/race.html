@@ -64,15 +64,15 @@
       <div class="d-flex justify-content-center align-items-end m-0 mb-2 gap-3">
         <div class="h3 fw-bold text-info m-0">
           <i class="bi bi-flag-fill"></i> 
-          <span id="showScore" class="text-info-light"></span>
+          <span id="showScore"></span> m
         </div>
-        <div class="h3 fw-bold text-success-light m-0">
-          <i class="bi bi-gem"></i> : 
-          <span id="showLifeScore" class="text-success-light"></span>
+        <div class="h3 fw-bold text-danger-light m-0">
+          <i class="bi bi-heart-fill"></i>
+          <span id="showLifeScore" class="text-danger-light"></span>
         </div>
         <div class="h3 fw-bold text-warning m-0">
-          <i class="bi bi-trophy"></i> : 
-          <span id="showTopScore" class="text-warning-light"> 50 m</span>
+          <i class="bi bi-trophy"></i>
+          <span id="showTopScore"></span> m
         </div>
       </div>
       <!-- container -->
@@ -92,10 +92,13 @@
         </div>
         <!-- Buttons -->
         <div class="d-flex  gap-4">
-          <button id="start" class="btn btn-info fs-3 fw-light px-3 p-0" > 
+          <button id="retry" onclick="retry()" class="d-none btn btn-info fs-3 fw-light px-3 p-0" > 
+            <i class="bi bi-controller"></i> Retry 
+          </button>
+          <button id="start" onclick="toggleGame()" class="btn btn-info fs-3 fw-light px-3 p-0" > 
             <i class="bi bi-controller"></i> Start 
           </button>
-          <button id="pause" class="d-none btn btn-warning fs-3 fw-light px-3 p-0" > 
+          <button id="pause" onclick="pauseGame()" class="d-none btn btn-warning fs-3 fw-light px-3 p-0" > 
             <i class="bi bi-pause "></i>Pause 
           </button>
           <div class="d-flex gap-2">

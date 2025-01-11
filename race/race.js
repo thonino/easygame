@@ -1,7 +1,7 @@
 // Global settings
 const SPEED = 7;
 const N_PIXELS = 89;
-const ITEMS = ["bad", "good", "car2"];
+const ITEMS = ["bad","bad","bad", "good", "car2","car2", "car2"];
 const POSITION_ITEM_X = ["41", "130", "219"];
 const ITEM_HEIGHT = { "bad": 40, "good": 80, "car2": 125 };
 const ANGLE = 45;
@@ -10,6 +10,7 @@ let lastTimestamp = 0;
 let positionCar = 1;
 let currentPositionCar = 0;
 let score = 0;
+let topScore = 0;
 let lifeScore = 0;
 let isPaused = true;
 let startGame = false;
@@ -22,13 +23,16 @@ let lastKeyPress = 0;
 const car1 = document.getElementById("car1");
 const showScore = document.getElementById("showScore");
 const startBtn = document.getElementById("start");
+const retryBtn = document.getElementById("retry");
 const pauseBtn = document.getElementById("pause");
 const sidewalks = document.querySelectorAll(".sidewalk");
 const roadLines = document.querySelectorAll(".roadLines");
 const itemContainer = document.querySelector(".items");
 const showLifeScore = document.getElementById("showLifeScore");
+const showTopScore = document.getElementById("showTopScore");
 
 showLifeScore.textContent = lifeScore;
+showTopScore.textContent = topScore;
 
 // Car movement
 function updatePosition(direction) {
@@ -102,7 +106,15 @@ function updateLifeScore(value) {
 
 function updateScore() {
   score++;
-  showScore.textContent = `${score} m`;
+  showScore.textContent = score;
+  updateTopScore(score)
+}
+
+function updateTopScore(score){
+  if(score > topScore) {
+    topScore = score;
+    showTopScore.textContent = topScore;
+  }
 }
 
 // Animation
@@ -157,6 +169,21 @@ function createMoveElements(parent) {
   }
 }
 
+// Keyboard events
+document.addEventListener("keydown", (event) => {
+  switch (event.keyCode) {
+    case 37:
+      turnOn("left");
+      break; // Left arrow
+    case 39:
+      turnOn("right");
+      break; // Right arrow
+    case 32:
+      retry();
+      break; // Space
+  }
+});
+
 // Game state
 function toggleGame() {
   if (startGame) {
@@ -169,7 +196,7 @@ function startGaming() {
   startGame = true;
   isPaused = false;
   drive();
-  itemsInterval = setInterval(appearItems, 3000);
+  itemsInterval = setInterval(appearItems, 2000);
   startBtn.classList.add("d-none");
   pauseBtn.classList.remove("d-none");
 }
@@ -177,7 +204,7 @@ function startGaming() {
 function resumeGame() {
   isPaused = false;
   drive();
-  itemsInterval = setInterval(appearItems, 3000);
+  itemsInterval = setInterval(appearItems, 2000);
   startBtn.classList.remove("d-none");
   pauseBtn.classList.add("d-none");
 }
@@ -192,6 +219,8 @@ function pauseGame() {
 
 function gameOver() {
   pauseGame();
+  startBtn.classList.add("d-none");
+  retryBtn.classList.remove("d-none");
 }
 
 // Driving animation
@@ -199,28 +228,29 @@ function drive() {
   animationId = requestAnimationFrame(animate);
 }
 
-// Keyboard events
-document.addEventListener("keydown", (event) => {
-  switch (event.keyCode) {
-    case 37:
-      turnOn("left");
-      break; // Left arrow
-    case 39:
-      turnOn("right");
-      break; // Right arrow
-    case 32:
-      toggleGame();
-      break; // Space
+function retry() {
+  init();
+  toggleGame();
+  retryBtn.classList.add("d-none");
+  if(positionCar === 0){
+    positionCar++;
+    currentPositionCar += N_PIXELS;
+    let turn = "right";
+    updatePosition(turn);
   }
-});
-
-
+  if(positionCar === 2){
+    positionCar--;
+    currentPositionCar -= N_PIXELS;
+    let turn = "left";
+    updatePosition(turn);
+  }
+}
 
 // Init
 function init() {
-  showScore.textContent = "0 m";
-  lifeScore = 0;
-  activeItems = [];
+  score = 0;
+  showScore.textContent = "0";
+  activeItems = []
 }
 
 init();
