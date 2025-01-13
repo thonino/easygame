@@ -1,4 +1,7 @@
-#screen { cursor: crosshair !important ;}
+#screen { 
+  cursor: crosshair !important ;
+  max-width: 800px;
+}
 
 .modal {
   background: rgba(0, 0, 0, 0.75);

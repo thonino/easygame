@@ -6,14 +6,11 @@
     position: relative;
 }
 
-
 #car1 {
     /* left -> 42px; midle -> 131px ; right -> 220px */
     left: 131px;
     transition: transform 0.4s ease;
 }
-
-
 
 .sidewalk {
     display: flex;
@@ -31,10 +28,16 @@ left: 0;
 right: 0;
 }
 
-
-
 .roadLines {
     display: flex;
     justify-content: center;
 }
 
+.modal {
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(5px);
+}
+
+#fire{
+    backdrop-filter: blur(5px);
+}

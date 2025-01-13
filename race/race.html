@@ -59,7 +59,9 @@
     </nav>
     <!-- Main Content -->
     <main class="d-flex flex-column align-items-center justify-content-center m-0 mx-2">
-      <h1 class=" text-info fw-bold m-0 mt-2 mb-2">Race </h1>
+      <div class="d-flex align-items-center p-0 m-0">
+        <h1 class="text-info fw-bold m-0 my-1">Race </h1>
+      </div>
       <!-- Score -->
       <div class="d-flex justify-content-center align-items-end m-0 mb-2 gap-3">
         <div class="h3 fw-bold text-info m-0">
@@ -77,10 +79,7 @@
       </div>
       <!-- container -->
         <!-- Screen -->
-        <div id="container" class="d-flex mb-2" > 
-          <div id="car1" class="position-absolute bottom-0 mb-2">
-            <img src="../img/car1.png" alt="Car">
-          </div>
+        <div id="container" class="d-flex mb-2 position-relative" > 
           <div class="items"></div>
           <div class="sidewalk bg-success rounded-start-3"></div>
           <div class="bg-info-dark"  style="width: 90px"></div> <!-- road 1  -->
@@ -89,24 +88,50 @@
           <div class="roadLines bg-info-dark"></div>        
           <div class="bg-info-dark "  style="width: 90px"></div> <!-- road 3  -->     
           <div class="sidewalk bg-success rounded-end-3"></div>
-        </div>
-        <!-- Buttons -->
-        <div class="d-flex  gap-4">
-          <button id="retry" onclick="retry()" class="d-none btn btn-info fs-3 fw-light px-3 p-0" > 
-            <i class="bi bi-controller"></i> Retry 
-          </button>
-          <button id="start" onclick="toggleGame()" class="btn btn-info fs-3 fw-light px-3 p-0" > 
-            <i class="bi bi-controller"></i> Start 
-          </button>
-          <button id="pause" onclick="pauseGame()" class="d-none btn btn-warning fs-3 fw-light px-3 p-0" > 
-            <i class="bi bi-pause "></i>Pause 
-          </button>
-          <div class="d-flex gap-2">
-            <button onclick="turnOn('left')" class="btn bg-info-dark">
-              <i class="bi bi-arrow-left-short text-info h2"></i>
+          <div id="car1" class="position-absolute bottom-0 mb-2">
+            <img src="../img/car1.png" alt="Car">
+          </div>
+          <img 
+            id="fire" 
+            src="../img/fire.png" 
+            alt="fire" 
+            class="position-absolute bottom-0 d-none opacity-75" 
+            style="width: 268px; height: 40px; left: 37px"
+          >
+          <!-- retry an start -->
+          <div class="d-flex top-50 start-50 translate-middle position-absolute">
+            <button 
+              id="retry" 
+              onclick="retryFx()" 
+              class="d-none btn bg-info-light fs-3 fw-light px-3 p-0 shadow" 
+            > 
+              <i class="bi bi-controller"></i> Retry 
             </button>
-            <button onclick="turnOn('right')" class="btn bg-info-dark">
-              <i class="bi bi-arrow-right-short text-info h2"></i>
+            <button 
+              id="start" 
+              onclick="toggleGame()" 
+              class="btn bg-info-light fs-3 fw-light px-3 p-0 shadow" 
+            > 
+              <i class="bi bi-controller"></i> Start 
+            </button>
+          </div>
+          <!-- pause-->
+          <div class="bottom-0 position-absolute">
+            <button 
+              id="pause" 
+              onclick="pauseGame()" 
+              class="d-none btn btn-warning fs-3 fw-light  m-2 opacity-50"
+              > 
+              <i class="bi bi-pause "></i>
+            </button>
+          </div>
+          <!-- direction -->
+          <div class="d-flex bottom-0 start-50 translate-middle-x position-absolute gap-4 mb-2">
+            <button onclick="turnOn('left')" class="btn bg-info-light opacity-50">
+              <i class="bi bi-arrow-left-short h1"></i>
+            </button>
+            <button onclick="turnOn('right')" class="btn bg-info-light opacity-50">
+              <i class="bi bi-arrow-right-short h1"></i>
             </button>
           </div>
         </div>
@@ -120,24 +145,24 @@
       </div>
     </footer>
     
-    <!-- End Game Modal -->
-    <div class="modal" id="showEndGameModal" tabindex="-1">
+    <!-- GameOver Modal -->
+    <div class="modal" id="gameOverModal" tabindex="-1">
       <div class="modal-dialog d-flex justify-content-center align-items-center min-vh-100 my-0">
         <div class="modal-content bg-transparent border-0 gap-2">
-          <div class="d-flex justify-content-center align-items-center gap-4">
-            <p class="text-info-light display-1 text-center">Time out</p>
+          <div class="d-flex justify-content-center align-items-center gap-2">
+            <p class=" text-info-light"> <span class="display-1">Game Over</span></p>
             <button class="btn" data-bs-dismiss="modal">
               <i class="bi bi-x-lg h1 text-secondary"></i>
             </button>
           </div>
           <p class="text-info h1 fw-light text-center mb-4 m-0"> 
-            <i class="bi bi-person-circle"></i> 
-            Score : <spam id="showEndScore" class="text-light"> </spam>
+            <i class="bi bi-flag-fill"></i> Score : 
+            <spam class="text-light"><spam id="endScore"></spam> m</spam> 
           </p>
-          <div id="showTopScoreEndGame" class="d-none text-center m-0 ">
-            <i class="bi bi-trophy display-1 fw-bold text-warning"></i> 
+          <p id="topScoreBroken" class="display-1 fw-bold text-center m-0 d-none">
+            <i class="bi bi-trophy text-warning"></i> 
             <span class="bg-warning h5 px-2 pb-1 rounded">Top score </span>
-          </div>
+          </p>
         </div>
       </div>
     </div>

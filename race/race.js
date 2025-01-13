@@ -1,11 +1,12 @@
 // Global settings
-const SPEED = 7;
 const N_PIXELS = 89;
-const ITEMS = ["bad","bad","bad", "good", "car2","car2", "car2"];
+const ITEMS = ["bad","bad","bad", "good", "boost","car2", "car2"];
 const POSITION_ITEM_X = ["41", "130", "219"];
-const ITEM_HEIGHT = { "bad": 40, "good": 80, "car2": 125 };
+const ITEM_HEIGHT = { "bad": 40, "good": 80, "car2": 125, "boost" : 80, };
 const ANGLE = 45;
 
+let speed = 7;
+let itemspeed = { "bad": speed, "good": speed, "boost" : speed, "car2": speed / 2,}; 
 let lastTimestamp = 0;
 let positionCar = 1;
 let currentPositionCar = 0;
@@ -16,8 +17,8 @@ let isPaused = true;
 let startGame = false;
 let animationId;
 let itemsInterval;
-let activeItems = []; // Active items array
 let lastKeyPress = 0;
+let gameOverStatus = false;
 
 // DOM elements
 const car1 = document.getElementById("car1");
@@ -30,6 +31,7 @@ const roadLines = document.querySelectorAll(".roadLines");
 const itemContainer = document.querySelector(".items");
 const showLifeScore = document.getElementById("showLifeScore");
 const showTopScore = document.getElementById("showTopScore");
+const fire = document.getElementById("fire");
 
 showLifeScore.textContent = lifeScore;
 showTopScore.textContent = topScore;
@@ -69,7 +71,6 @@ function appearItems() {
   item.classList.add("move");
   item.dataset.type = randomItem;
   itemContainer.appendChild(item);
-  activeItems.push(item);
 }
 
 // Collision detection
@@ -81,18 +82,25 @@ function isBoum(item) {
   const itemLeft = parseInt(item.style.left);
   const itemHeight = ITEM_HEIGHT[item.dataset.type];
   const isSameX = itemLeft === parseInt(carPositionX);
-  const isSameY = itemTop + itemHeight - 5 >= carTopMin && itemTop + itemHeight - 5 <= carTopMax;
+  const isSameY = itemTop + itemHeight - 5 >= carTopMin && 
+                  itemTop + itemHeight - 5 <= carTopMax;
   if (isSameX && isSameY) {
-    if (item.dataset.type === "good") {
-      updateLifeScore("more");
-    } else {
-      if (lifeScore > 0) {
-        updateLifeScore("less");
-      } else {
-        console.log("GAME OVER");
-        gameOver();
-      }
+    if (item.dataset.type === "boost") { 
+      speed = 14  ;
+      fire.classList.remove("d-none");
+      animate();
+      setTimeout(() => {
+      speed = 7  ;
+      fire.classList.add("d-none");
+      animate();  
+      }, 10000);
+    } 
+    if (item.dataset.type === "good") { updateLifeScore("more");} 
+    if (item.dataset.type !== "good" && item.dataset.type !== "boost"){ 
+      if (lifeScore > 0) { updateLifeScore("less"); } 
+      else { gameOver();  }
     }
+    item.remove();  // Remove item after collision
     return true; // Collision happened
   }
   return false; // No collision
@@ -107,7 +115,7 @@ function updateLifeScore(value) {
 function updateScore() {
   score++;
   showScore.textContent = score;
-  updateTopScore(score)
+  updateTopScore(score);
 }
 
 function updateTopScore(score){
@@ -126,15 +134,11 @@ function animate(timestamp) {
   if (delta > 16) {
     sidewalks.forEach(createMoveElements);
     roadLines.forEach(createMoveElements);
-    activeItems = activeItems.filter((item) => {
+    const items = document.querySelectorAll(".items img");
+    items.forEach((item) => {
       const currentTop = parseInt(item.style.top);
-      if (currentTop > 600 || isBoum(item)) {
-        item.remove();
-        return false; // Remove from activeItems
-      } else {
-        item.style.top = `${currentTop + SPEED}px`;
-        return true; // Keep in activeItems
-      }
+      if(currentTop > 600 || isBoum(item)){ item.remove();} // Remove item
+      else{item.style.top = `${currentTop + itemspeed[item.dataset.type]}px`;}
     });
     lastTimestamp = timestamp;
   }
@@ -151,7 +155,7 @@ function createMoveElements(parent) {
   parent.querySelectorAll(".move").forEach((line) => {
     const currentTop = parseInt(line.style.top);
     if (currentTop > 600) line.remove();
-    else line.style.top = `${currentTop + SPEED}px`;
+    else line.style.top = `${currentTop + speed}px`;
   });
   const moveElements = parent.querySelectorAll(".move");
   const lastTop = moveElements.length
@@ -172,15 +176,12 @@ function createMoveElements(parent) {
 // Keyboard events
 document.addEventListener("keydown", (event) => {
   switch (event.keyCode) {
-    case 37:
-      turnOn("left");
-      break; // Left arrow
-    case 39:
-      turnOn("right");
-      break; // Right arrow
-    case 32:
-      retry();
-      break; // Space
+    case 37: turnOn("left"); break; // Left arrow
+    case 39: turnOn("right"); break; // Right arrow
+    case 32: 
+      if(gameOverStatus){ retryFx(); }
+      else{ toggleGame(); }
+    break; // Space
   }
 });
 
@@ -188,15 +189,15 @@ document.addEventListener("keydown", (event) => {
 function toggleGame() {
   if (startGame) {
     if (isPaused) resumeGame();
-    else pauseGame();
-  } else startGaming();
+    else pauseGame(); } 
+  else startGaming();
 }
 
 function startGaming() {
   startGame = true;
   isPaused = false;
   drive();
-  itemsInterval = setInterval(appearItems, 2000);
+  itemsInterval = setInterval(appearItems, 2500);
   startBtn.classList.add("d-none");
   pauseBtn.classList.remove("d-none");
 }
@@ -204,9 +205,9 @@ function startGaming() {
 function resumeGame() {
   isPaused = false;
   drive();
-  itemsInterval = setInterval(appearItems, 2000);
-  startBtn.classList.remove("d-none");
-  pauseBtn.classList.add("d-none");
+  itemsInterval = setInterval(appearItems, 2500);
+  startBtn.classList.add("d-none");
+  pauseBtn.classList.remove("d-none");
 }
 
 function pauseGame() {
@@ -217,20 +218,32 @@ function pauseGame() {
   pauseBtn.classList.add("d-none");
 }
 
+const showGameOverModal = document.getElementById("gameOverModal");
+const topScoreBroken = document.getElementById("topScoreBroken");
+const modal = new bootstrap.Modal(showGameOverModal)
 function gameOver() {
-  pauseGame();
-  startBtn.classList.add("d-none");
+  gameOverStatus = true;
+  isPaused = true;
+  cancelAnimationFrame(animationId);
+  clearInterval(itemsInterval);
+  pauseBtn.classList.add("d-none");
   retryBtn.classList.remove("d-none");
+  document.getElementById('endScore').textContent = score;
+  setTimeout(() => {
+    modal.show();
+    if(score === topScore){ topScoreBroken.classList.remove("d-none");  }
+    setTimeout(() => { modal.hide(); }, 4000);
+  }, 500);
 }
 
 // Driving animation
-function drive() {
-  animationId = requestAnimationFrame(animate);
-}
+function drive() { animationId = requestAnimationFrame(animate); }
 
-function retry() {
+function retryFx() {
+  gameOverStatus = false;
   init();
   toggleGame();
+  topScoreBroken.classList.add("d-none");
   retryBtn.classList.add("d-none");
   if(positionCar === 0){
     positionCar++;
@@ -250,7 +263,8 @@ function retry() {
 function init() {
   score = 0;
   showScore.textContent = "0";
-  activeItems = []
+  const items = document.querySelectorAll(".items img");
+  items.forEach(item => item.remove());  // Clear any existing items
 }
 
-init();
+init(); 

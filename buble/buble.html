@@ -59,17 +59,13 @@
     <!-- Main Content -->
     <main class="d-flex flex-column align-items-center justify-content-center m-0">
       <h1 class=" text-info fw-bold m-0 mt-2 mb-2">Buble Killer</h1>
-      <p class="text-success-light h1 m-0 "> 
-        <i class="bi bi-alarm"></i> 
-        <spans id="showTimer"> </spans>
-      </p>
-      
       <!-- Score -->
       <div class="d-flex justify-content-around m-0 mb-2 w-100" >
-        <div class="h3 fw-bold text-info m-0">
-          Score : <span id="showScore" class="text-info-light"></span>
-        </div>
-        <div class="h3 fw-bold text-warning m-0 ">
+        <p class="text-success h3 m-0 "> 
+          <i class="bi bi-alarm"></i> 
+          <spans id="showTimer" class="text-success-light"> </spans>
+        </p>
+        <div class="h3 fw-bold text-warning m-0">
           <i class="bi bi-trophy"></i>
           <span id="showTopScore" class="text-warning"></span>
         </div>
@@ -82,17 +78,20 @@
           class="bg-secondary-light w-100 mb-2 position-relative overflow-auto overflow-hidden rounded-4 shadow" 
           style="height: 480px;"
         >
+        <div id="showScore" class="h1 fw-bold text-info-dark m-0"></div>
+        <div class="d-flex justify-content-center align-items-center h-75">
+          <button id="start" class="btn btn-info btn-lg fs-3 fw-light px-3 p-0 shadow"> 
+            Start !
+          </button>
+        </div>
           <span id="targetBuble"></span>
         </div>
         <!-- Button -->
-        <button id="start" class="btn btn-info btn-lg fs-3 fw-light px-3 p-0"> 
-          Start !
-        </button>
       </div>
     </main>
 
     <!-- Footer -->
-    <footer class="container-fluid position-fixed bottom-0  p-0">
+    <footer class="container-fluid position-fixed bottom-0 p-0">
       <div class="bg-dark text-light container-fluid text-center p-4">
         <p class="mb-0">&copy; 2024 <strong>EasyGame</strong> Tous droits réservés.</p>
       </div>

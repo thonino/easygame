@@ -60,13 +60,8 @@
     <!-- Main Content -->
     <main class="d-flex flex-column align-items-center justify-content-center m-0">
       <h1 class="fw-bold text-info m-0 mt-2 mb-1">Snake</h1>
-      <div  class="m-0"  onclick="newgame()" >
-        <i class="bi bi-arrow-clockwise btn bg-primary text-light m-0 mt-2">
-          New
-        </i> 
-      </div>
       <!-- Score -->
-      <div class="d-flex justify-content-between m-0 mt-1" style="width: 320px;" >
+      <div class="d-flex justify-content-between align-items-center m-0 mt-1" style="width: 320px;" >
         <div class="h3 fw-bold text-info m-0">
           Score : <span id="score" class="text-info-light"></span>
         </div>
@@ -78,30 +73,9 @@
       </div>
       <!-- Table -->
       <div id="table" class="shadow bg-light mt-2 mb-1"></div>
-      <div class="d-flex flex-column mt-2 mb-1">
-        <!-- Direction btn -->
-        <div class="d-flex align-items-end gap-2 mb-1">
-          <div>
-            <button onclick="changeDirection('left')" class="btn bg-info-dark btn-lg">
-              <i class="bi bi-arrow-left-short text-info h2"></i>
-            </button>
-          </div>
-          <div class="d-flex flex-column gap-2">
-            <button onclick="changeDirection('up')" class="btn bg-info-dark btn-lg">
-              <i class="bi bi-arrow-up-short text-info h2"></i>
-            </button>
-            <button onclick="changeDirection('down')" class="btn bg-info-dark btn-lg">
-              <i class="bi bi-arrow-down-short text-info h2"></i>
-            </button>
-          </div>
-          <div>
-            <button onclick="changeDirection('right')" class="btn bg-info-dark btn-lg">
-              <i class="bi bi-arrow-right-short text-info h2"></i>
-            </button>
-          </div>
-        </div>
+      <div class="d-flex  mt-2 mb-1">
         <!-- Start and pause btn -->
-        <div class="d-flex justify-content-center mt-2">
+        <div class="d-flex justify-content-center m-0 ">
           <div>
             <button id="start" class="btn btn-info fs-3 fw-light px-2 p-0"> 
               Start !
@@ -109,7 +83,28 @@
           </div>
             <div>
             <button id="pause" class="btn btn-warning fs-3 fw-light px-2 p-0 d-none"> 
-              <i class="bi bi-pause "></i>Pause 
+              <i class="bi bi-pause"></i>Pause 
+            </button>
+          </div>
+        </div>
+        <!-- Direction btn -->
+        <div class="d-flex align-items-end gap-2 mb-1">
+          <div>
+            <button onclick="changeDirection('left')" class="btn bg-info-dark ">
+              <i class="bi bi-arrow-left-short text-info h2"></i>
+            </button>
+          </div>
+          <div class="d-flex flex-column gap-2">
+            <button onclick="changeDirection('up')" class="btn bg-info-dark ">
+              <i class="bi bi-arrow-up-short text-info h2"></i>
+            </button>
+            <button onclick="changeDirection('down')" class="btn bg-info-dark ">
+              <i class="bi bi-arrow-down-short text-info h2"></i>
+            </button>
+          </div>
+          <div>
+            <button onclick="changeDirection('right')" class="btn bg-info-dark ">
+              <i class="bi bi-arrow-right-short text-info h2"></i>
             </button>
           </div>
         </div>

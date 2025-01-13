@@ -83,10 +83,12 @@ let addElement = () => {
   }, 2000);
 };
 
+let startBnt = document.getElementById("start");
 // Start
 let gameRunning = false; 
 function gameLogic() {
   if (gameRunning) return;  gameRunning = true;
+  startBnt.classList.add("d-none");
   let playInterval = setInterval(addElement, 300); // start
   for (let i = timer; i >= 0; i--) {
     setTimeout(() => {
@@ -104,29 +106,29 @@ function gameLogic() {
           setTimeout(() => {
             modal.hide();
             gameRunning = false; 
-          }, 4000);
-        }, 2000);
+            startBnt.classList.remove("d-none");
+          }, 5000);
+        }, 3500);
         // Show topScore
         if (Number(score) === Number(topScore)) {
           showTopScoreEndGame.classList.remove("d-none");
-          console.log("score : " + score + " topScore : " + topScore);
         } else {
           showTopScoreEndGame.classList.add("d-none");
-          console.log("score : " + score + " topScore : " + topScore);
         }
         // Reset 
         setTimeout(() => {
           score = 0;
           showScore.textContent = score;
           showTimer.textContent = 5;
-        }, 2000);
+        }, 3500);
       }
     }, (timer - i) * 1000);
   }
 }
 
+
 // Gestion des événements
-document.getElementById("start").addEventListener("click", gameLogic);
+startBnt.addEventListener("click", gameLogic);
 document.addEventListener("keydown", (event) => {
   if (event.keyCode === 32) { // Barre d'espace
     console.log("keydown 32");
