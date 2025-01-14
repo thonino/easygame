@@ -32,6 +32,7 @@ const itemContainer = document.querySelector(".items");
 const showLifeScore = document.getElementById("showLifeScore");
 const showTopScore = document.getElementById("showTopScore");
 const fire = document.getElementById("fire");
+const showDirections = document.getElementById("showDirections");
 
 showLifeScore.textContent = lifeScore;
 showTopScore.textContent = topScore;
@@ -82,8 +83,8 @@ function isBoum(item) {
   const itemLeft = parseInt(item.style.left);
   const itemHeight = ITEM_HEIGHT[item.dataset.type];
   const isSameX = itemLeft === parseInt(carPositionX);
-  const isSameY = itemTop + itemHeight - 5 >= carTopMin && 
-                  itemTop + itemHeight - 5 <= carTopMax;
+  const isSameY = itemTop + itemHeight +30 >= carTopMin && 
+                  itemTop + itemHeight +30 <= carTopMax;
   if (isSameX && isSameY) {
     if (item.dataset.type === "boost") { 
       speed = 14  ;
@@ -188,9 +189,9 @@ document.addEventListener("keydown", (event) => {
 // Game state
 function toggleGame() {
   if (startGame) {
-    if (isPaused) resumeGame();
-    else pauseGame(); } 
-  else startGaming();
+    if (isPaused) {resumeGame(); showDirections.classList.remove("d-none")}
+    else{ pauseGame(); showDirections.classList.add("d-none")}} 
+  else { startGaming(); showDirections.classList.remove("d-none")}
 }
 
 function startGaming() {
@@ -228,6 +229,7 @@ function gameOver() {
   clearInterval(itemsInterval);
   pauseBtn.classList.add("d-none");
   retryBtn.classList.remove("d-none");
+  showDirections.classList.add("d-none");
   document.getElementById('endScore').textContent = score;
   setTimeout(() => {
     modal.show();
