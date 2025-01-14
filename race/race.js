@@ -187,12 +187,41 @@ document.addEventListener("keydown", (event) => {
 });
 
 // Game state
+
 function toggleGame() {
   if (startGame) {
-    if (isPaused) {resumeGame(); showDirections.classList.remove("d-none")}
-    else{ pauseGame(); showDirections.classList.add("d-none")}} 
-  else { startGaming(); showDirections.classList.remove("d-none")}
+    if (isPaused) {
+      resumeGame(); 
+      showDirections.classList.remove("d-none");
+      showDirections.style.opacity = 1; 
+    }
+    else{ 
+      pauseGame(); 
+      showDirections.classList.add("d-none");
+    }
+  } else { 
+    startGaming(); 
+    car1.style.transition = "margin-bottom 2s ease";  
+    car1.classList.add("mb-5"); 
+
+    // Transition de showDirections
+    setTimeout(() => {
+      showDirections.classList.remove("d-none");
+      setTimeout(() => {
+        showDirections.style.opacity = 1; 
+      }, 10);
+    }, 1000);
+
+    // Réduire la transition après 2 secondes
+    setTimeout(() => {
+      car1.style.transition = "margin-bottom 0.4s ease";  
+      car1.style.transition = "transform 0.5s ease";  
+    }, 2000);
+  }
 }
+
+
+
 
 function startGaming() {
   startGame = true;
