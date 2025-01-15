@@ -192,6 +192,10 @@ function toggleGame() {
   if (startGame) {
     if (isPaused) {
       resumeGame(); 
+      imgCar1.src = "../img/car1Fire.png";
+      setTimeout(() => {
+        imgCar1.src = "../img/car1.png" 
+      }, 500);
       showDirections.classList.remove("d-none");
       showDirections.style.opacity = 1; 
     }
@@ -200,27 +204,28 @@ function toggleGame() {
       showDirections.classList.add("d-none");
     }
   } else { 
-    startGaming(); 
-    car1.style.transition = "margin-bottom 2s ease";  
+    imgCar1.src = "../img/car1Fire.png";
+    setTimeout(() => {
+      imgCar1.src = "../img/car1.png" 
+    }, 500);
+    startBtn.classList.add("d-none");
+    pauseBtn.classList.remove("d-none");
+    car1.style.transition = "margin-bottom 1s ease";  
     car1.classList.add("mb-5"); 
-
-    // Transition de showDirections
     setTimeout(() => {
       showDirections.classList.remove("d-none");
       setTimeout(() => {
         showDirections.style.opacity = 1; 
-      }, 10);
-    }, 1000);
-
-    // Réduire la transition après 2 secondes
+        startGaming();
+      }, 50);
+    }, 500);
     setTimeout(() => {
-      car1.style.transition = "margin-bottom 0.4s ease";  
-      car1.style.transition = "transform 0.5s ease";  
-    }, 2000);
+      car1.style.transition = "margin-bottom 0.5s ease";  
+      car1.style.transition = "transform 0.5s ease"; 
+      
+    }, 1500);
   }
 }
-
-
 
 
 function startGaming() {
@@ -228,8 +233,6 @@ function startGaming() {
   isPaused = false;
   drive();
   itemsInterval = setInterval(appearItems, 2500);
-  startBtn.classList.add("d-none");
-  pauseBtn.classList.remove("d-none");
 }
 
 function resumeGame() {
