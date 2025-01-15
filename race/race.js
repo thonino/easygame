@@ -22,6 +22,7 @@ let gameOverStatus = false;
 
 // DOM elements
 const car1 = document.getElementById("car1");
+const imgCar1 = document.getElementById("imgCar1");
 const showScore = document.getElementById("showScore");
 const startBtn = document.getElementById("start");
 const retryBtn = document.getElementById("retry");
@@ -31,7 +32,6 @@ const roadLines = document.querySelectorAll(".roadLines");
 const itemContainer = document.querySelector(".items");
 const showLifeScore = document.getElementById("showLifeScore");
 const showTopScore = document.getElementById("showTopScore");
-const fire = document.getElementById("fire");
 const showDirections = document.getElementById("showDirections");
 
 showLifeScore.textContent = lifeScore;
@@ -87,12 +87,12 @@ function isBoum(item) {
                   itemTop + itemHeight +30 <= carTopMax;
   if (isSameX && isSameY) {
     if (item.dataset.type === "boost") { 
+      imgCar1.src = "../img/car1Fire.png";
       speed = 14  ;
-      fire.classList.remove("d-none");
       animate();
       setTimeout(() => {
-      speed = 7  ;
-      fire.classList.add("d-none");
+        imgCar1.src = "../img/car1.png"
+        speed = 7  ;
       animate();  
       }, 10000);
     } 
