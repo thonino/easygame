@@ -16,7 +16,7 @@ for (let i = 0; i < 10; i++) {
 
   row[`row${i}`].forEach(item => {
     let colDiv = document.createElement("div"); // Column
-    colDiv.id = "x" + i + "-y" + item;
+    colDiv.id = `y${i}-x${item}`;
     colDiv.style.width = "35px";
     colDiv.style.height = "35px";
     colDiv.style.backgroundColor = "#d6d8db";
@@ -28,7 +28,7 @@ for (let i = 0; i < 10; i++) {
 
 // create the snake default
 let direction = "right";
-let snake = ["x5-y3", "x5-y2"];
+let snake = ["y5-x3", "y5-x2"];
 snake.forEach(fill => {
   let cell = document.getElementById(fill);
   if (cell) cell.classList.add("bg-info");
@@ -58,12 +58,14 @@ function changeDirection(value) {
 function isOut(position) {
   return position.some(pos => {
     let matches = pos.match(/-?\d+/g);
-    return matches.some(num => parseInt(num) < 0 || parseInt(num) > 9);
+    let y = parseInt(matches[0], 10);
+    let x = parseInt(matches[1], 10);
+    return y < 0 || y > 9 || x < 0 || x > 9;
   });
 }
 
 // eat default
-let eat = "x3-y6"; 
+let eat = "y3-x6"; 
 let score = 0;
 let topScore = 0;
 let gameOverPosition = [];
@@ -99,7 +101,7 @@ function generateNewEat() {
   let random = Math.floor(Math.random() * 10);
   const newX = random;
   const newY = random;
-  const newEat = `x${newX}-y${newY}`;
+  const newEat = `y${newY}-x${newX}`;
   updateEatPosition(newEat);
 }
 
@@ -125,18 +127,18 @@ function moveSnake() {
   gameOverPosition = [...snake];
   snake = snake.map((item, index) => {
     let splitting = item.match(/\d+/g);
-    let x = parseInt(splitting[0], 10);
-    let y = parseInt(splitting[1], 10);
+    let y = parseInt(splitting[0], 10); 
+    let x = parseInt(splitting[1], 10);
     if (index === 0) {
-      if (direction === "right") y += 1;
-      if (direction === "left") y -= 1;
-      if (direction === "up") x -= 1;
-      if (direction === "down") x += 1;
+      if (direction === "right") x += 1;
+      if (direction === "left") x -= 1;
+      if (direction === "up") y -= 1;
+      if (direction === "down") y += 1;
     } else {
       let prev = gameOverPosition[index - 1];
       return prev;
     }
-    return "x" + x + "-y" + y;
+    return "y" + y + "-x" + x;
   });
 
   snake.forEach(fill => {
@@ -251,14 +253,14 @@ function newgame() {
   }
 
   // Reset snake
-  eat = "x3-y6"; 
+  eat = "y3-x6"; 
   if (document.getElementById(eat)) {
     document.getElementById(eat).style.backgroundColor = "#198754"; 
   }
 
   // reset directions
   direction = "right";
-  snake = ["x5-y3", "x5-y2"];
+  snake = ["y5-x3", "y5-x2"];
   snake.forEach(fill => {
     let cell = document.getElementById(fill);
     if (cell) { cell.classList.add("bg-info"); }
