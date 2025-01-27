@@ -178,54 +178,56 @@ function resetMainScreen(item) {
 function move(direction) {
   if (!isMovable) return;
   resetMainScreen(newLastItem);
-  const canMoveLeft = newLastItem.schema.every(coord => { // left
+  // left boolean
+  const canMoveLeft = newLastItem.schema.every(coord => { 
     const [y, x] = coord.match(/\d+/g).map(Number);
     if (x <= 0) return false;
     const coordNextItem = `mainScreen-y${y}-x${x - 1}`;
     const checkColor = document.getElementById(coordNextItem);
     return !(checkColor && checkColor.classList.length > 0);
   });
-  const canMoveRight = newLastItem.schema.every(coord => { // right
+  // right boolean
+  const canMoveRight = newLastItem.schema.every(coord => { 
     const [y, x] = coord.match(/\d+/g).map(Number);
     if (x >= 9) return false;
     const coordNextItem = `mainScreen-y${y}-x${x + 1}`;
     const checkColor = document.getElementById(coordNextItem);
     return !(checkColor && checkColor.classList.length > 0);
   });
-
+  // rotations boolean
   const canMoveUp = newLastItem.schema.every(coord => {
     const [y, x] = coord.match(/\d+/g).map(Number);
     const coordNextItem = `mainScreen-y${y}-x${x - 1}`;
     const checkColor = document.getElementById(coordNextItem);
     return !(checkColor && checkColor.classList.length > 0);
   });
-
-// rotations
-if (direction === "up" && canMoveUp) {
-  const color = newLastItem.color;
-  const currentROTATIONS = ROTATIONS[color];
-  if (currentROTATIONS){
-    if (!newLastItem.stape) newLastItem.stape = 1;
-    newLastItem.schema = newLastItem.schema.map((coord, i) => {
-      const [y, x] = coord.match(/\d+/g).map(Number);
-      const [dy, dx] = currentROTATIONS[newLastItem.stape][i] || [0, 0];
-      return `y${y + dy}-x${x + dx}`;
-    });
-    // update stapes
-    if (newLastItem.stape < Object.keys(currentROTATIONS).length) {
-      newLastItem.stape++;
-    } else {
-      newLastItem.stape = 1;
+  // rotations
+  if (direction === "up" && canMoveUp) {
+    const color = newLastItem.color;
+    const currentROTATIONS = ROTATIONS[color];
+    if (currentROTATIONS){
+      if (!newLastItem.stape) newLastItem.stape = 1;
+      newLastItem.schema = newLastItem.schema.map((coord, i) => {
+        const [y, x] = coord.match(/\d+/g).map(Number);
+        const [dy, dx] = currentROTATIONS[newLastItem.stape][i] || [0, 0];
+        return `y${y + dy}-x${x + dx}`;
+      });
+      // update stapes
+      if (newLastItem.stape < Object.keys(currentROTATIONS).length) {
+        newLastItem.stape++;
+      } else {
+        newLastItem.stape = 1;
+      }
     }
   }
-}
-
+  // move left
   if (direction === "left" && canMoveLeft) {
     newLastItem.schema = newLastItem.schema.map(coord => {
       const [y, x] = coord.match(/\d+/g).map(Number);
       return `y${y}-x${x - 1}`;
     });
   } 
+  // move left
   else if (direction === "right" && canMoveRight) {
     newLastItem.schema = newLastItem.schema.map(coord => {
       const [y, x] = coord.match(/\d+/g).map(Number);
@@ -235,50 +237,92 @@ if (direction === "up" && canMoveUp) {
   fillItemMain(newLastItem);
 }
 
-  // button
-  function direction(value) { move(value); }
+// button
+function direction(value) { move(value); }
 
-  // keyboards
-  document.addEventListener("keydown", (event) => {
-    if (!isMovable) return;
-    switch (event.keyCode) {  
-      case 37: move("left"); break; // left
-      case 38: move("up"); break; // up
-      case 39: move("right"); break; // right
-    }
-  });
+// keyboards
+document.addEventListener("keydown", (event) => {
+  if (!isMovable) return;
+  switch (event.keyCode) {  
+    case 37: move("left"); break; // left
+    case 38: move("up"); break; // up
+    case 39: move("right"); break; // right
+  }
+});
+
+let fallingInterval = null;
 
 function fall() {
   let isFalling = true;
-  const interval = setInterval(() => {
-    resetMainScreen(newLastItem);
-    const nextSchema = newLastItem.schema.map(coord => {
-      const [y, x] = coord.match(/\d+/g).map(Number);
-      let coordNextItem = `mainScreen-y${y + 1}-x${x}`;
-      const checkColor = document.getElementById(coordNextItem);
-      if (y >= 19 || (checkColor && checkColor.classList.length > 0)) {  
-        isFalling = false;
-        isMovable = false;
-        letMove(false);
-        return coord;  
-      }
-      return `y${y + 1}-x${x}`;  // item fall
-    });
-    if (!isFalling) {
-      clearInterval(interval);
-      fillItemMain(newLastItem); 
-      setTimeout(() => {
-        falling(); 
-      }, 200);  
-      return;
+  resetMainScreen(newLastItem);
+  // make next schema
+  const nextSchema = newLastItem.schema.map(coord => {
+    const [y, x] = coord.match(/\d+/g).map(Number);
+    let coordNextItem = `mainScreen-y${y + 1}-x${x}`;
+    const checkColor = document.getElementById(coordNextItem);
+    if (y >= 19 || (checkColor && checkColor.classList.length > 0)) {  
+      isFalling = false;
+      isMovable = false;
+      letMove(false);
+      return coord;  
     }
-    newLastItem.schema = nextSchema;
+    return `y${y + 1}-x${x}`; // item fall
+  });
+  if (!isFalling) {
+    clearInterval(fallingInterval);
     fillItemMain(newLastItem);
-  }, 250);
+    // check if the rows are filled
+    let line = [];
+    for (let n = 0; n < 20; n++) {
+      line[n] = [];
+      for (let i = 0; i < 10; i++) {
+        let checkLine = document.getElementById(`mainScreen-y${n}-x${i}`);
+        if (checkLine && checkLine.classList.length > 0) { 
+          line[n].push("yes");
+        } 
+        else { line[n].push("no"); }
+      }
+      // if rows filled
+      if (line[n].every(cell => cell === "yes")) {
+        for (let currentRow = n; currentRow > 0; currentRow--) {
+          for (let i = 0; i < 10; i++) {
+            let currentCell = document.getElementById(`mainScreen-y${currentRow}-x${i}`);
+            let aboveCell = document.getElementById(`mainScreen-y${currentRow - 1}-x${i}`);
+            if (currentCell && aboveCell) {
+              // copy above cells colors
+              currentCell.style.backgroundColor = aboveCell.style.backgroundColor;
+              ITEMS.forEach(item => {
+                if (aboveCell.classList.contains(item.color)) {
+                  currentCell.classList.add(item.color);
+                } else {
+                  currentCell.classList.remove(item.color);
+                }
+              });
+              // reset above cells
+              aboveCell.style.backgroundColor = "#d6d8db";
+              ITEMS.forEach(item => aboveCell.classList.remove(item.color));
+            }
+          }
+        }
+      }
+    }
+    setTimeout(() => { falling(); }, 200); return; } // reload 
+  // uptdate item position
+  newLastItem.schema = nextSchema;
+  fillItemMain(newLastItem);
 }
 
+document.getElementById("pause").addEventListener("click", pauseFall);
+document.getElementById("resume").addEventListener("click", resumeFall);
+
+// start
 function falling() {
-  startTest();
+  document.getElementById("start").classList.add("d-none");
+  document.getElementById("pause").classList.remove("d-none");
+  lastItem = nextItem; 
+  nextItem = randomItem(lastItem); 
+  resetPrevScreen(lastItem); 
+  fillItemPrev(nextItem); 
   letMove(true);
   newLastItem = {
     ...lastItem,
@@ -286,34 +330,35 @@ function falling() {
       return item.slice(0, 4) + (Number(item[4]) + 4) + item.slice(5);
     }),
   };
-
   fillItemMain(newLastItem);  
-  fall();  
+  fallingInterval = setInterval(fall, 500); 
 }
 
-function startTest() {
-  // if (lastItem) { resetMainScreen(lastItem); }
-  lastItem = nextItem; 
-  nextItem = randomItem(lastItem); 
-  resetPrevScreen(lastItem); 
-  fillItemPrev(nextItem); 
+// pause
+function pauseFall() {
+  document.getElementById("resume").classList.remove("d-none")
+  document.getElementById("pause").classList.add("d-none");
+  if (fallingInterval) {
+    clearInterval(fallingInterval);
+    fallingInterval = null;
+  }
 }
+
+// RESUME
+function resumeFall() {
+  document.getElementById("resume").classList.add("d-none");
+  document.getElementById("pause").classList.remove("d-none")
+  if (!fallingInterval) {
+    fallingInterval = setInterval(fall, 500); 
+  }
+}
+
+// function start() {
+//   lastItem = nextItem; 
+//   nextItem = randomItem(lastItem); 
+//   resetPrevScreen(lastItem); 
+//   fillItemPrev(nextItem); 
+// }
 
 // Initialisation
 fillItemPrev(nextItem);
-
-
-
-
-
-// function resetMainScreen(item) {
-//   if (!item ) return; 
-//   item.schema.forEach(fill => {
-//     let fullId = "mainScreen-" + fill; 
-//     let cell = document.getElementById(fullId); 
-//     if (cell) {
-//       cell.style.backgroundColor = "#d6d8db"; 
-//       cell.classList.remove(item.color); 
-//     }
-//   });
-// }

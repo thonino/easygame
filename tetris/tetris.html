@@ -120,14 +120,18 @@
               <i class="bi bi-trophy text-info"></i> 
               <p id="topScore" class="text-info-light m-0"> 0</p>
             </div>
-            <div class="mt-3">
-              <button id="pause" class="btn bg-warning fs-5 fw-light px-1 p-0"> 
-                <i class="bi bi-pause ">Pause</i>
+            <div id="pause" class="mt-3 d-none">
+              <button class="btn bg-warning fs-5 fw-light px-1 p-0"> 
+                <i class="bi bi-pause">Pause</i>
               </button>
             </div>
-            <div class="mt-3">
+            <div id="resume" class="mt-3 d-none">
+              <button class="btn btn-info fs-5 fw-light fst-italic px-2 p-0"> 
+                <i class="bi bi-play-fill"></i>Play
+              </button>
+            </div>
+            <div id="start" class="mt-3">
               <button 
-              id="start"
               onclick="falling()"
               class="btn btn-info fs-5 fw-light fst-italic px-2 p-0"
               > 
