@@ -67,7 +67,7 @@
         <div class="position-relative d-flex flex-column align-items-center">
         <!-- Score -->
           <div class="h3 fw-bold text-info m-0">
-            Score : <span id="score" class="text-info-light">0</span>
+            Score : <span id="score" class="text-info-light"></span>
           </div>
           <!-- Table -->
           <div id="table1" class="shadow bg-light mt-2 mb-1"></div>
@@ -76,30 +76,30 @@
             <div class="d-flex align-items-end gap-2">
               <div class="d-flex flex-column align-items-end gap-2">
                 <div>
-                  <button onclick="direction('space')" class="btn btn-sm bg-info-dark">
+                  <button onclick="action('drop')" class="btn btn-sm bg-info-dark">
                     <span class="text-info-light fw-light fs-5 px-3 fst-italic"> _Space</span>
                   </button>
                 </div>
                 <div >
-                  <button onclick="direction('left')" class="btn btn-sm bg-info">
+                  <button onclick="action('left')" class="btn btn-sm bg-info">
                     <i class="bi bi-arrow-left-short text-info-dark h3"></i>
                   </button>
                 </div>
               </div>
               <div class="d-flex flex-column gap-2">
                 <div>
-                  <button onclick="direction('up')" class="btn btn-sm bg-info">
+                  <button onclick="action('up')" class="btn btn-sm bg-info">
                     <i class="bi bi-arrow-repeat text-info-dark h3"></i>
                   </button>
                 </div>
                 <div>
-                  <button onclick="direction('down')" class="btn btn-sm bg-info-light">
+                  <button onclick="action('down')" class="btn btn-sm bg-info-light">
                     <i class="bi bi-chevron-double-down text-info-dark  h3"></i>
                   </button>
                 </div>
               </div>
               <div>
-                <button onclick="direction('right')" class="btn btn-sm bg-info">
+                <button onclick="action('right')" class="btn btn-sm bg-info">
                   <i class="bi bi-arrow-right-short text-info-dark h3"></i>
                 </button>
               </div>
@@ -114,7 +114,7 @@
             <!-- Level -->
             <div class="h3 fw-bold  m-0 mt-3">
               <p class="h3 fw-bold text-info m-0">Level</p>
-              <p id="level" class="text-info-light m-0"> 0</p>
+              <p id="level" class="text-info-light m-0"></p>
             </div>
             <div class="h3 fw-bold m-0 mt-3">
               <i class="bi bi-trophy text-info"></i> 

@@ -123,7 +123,6 @@ function randomItem(lastItem) {
   let item = ITEMS;
   return item[Math.floor(Math.random() * item.length)];
 }
-
 function fillItemPrev(item) {
   if (!item) return; 
   item.schema.forEach(fill => {
@@ -132,7 +131,6 @@ function fillItemPrev(item) {
     if (cell) cell.classList.add(item.color); 
   });
 }
-
 function resetPrevScreen(item) {
   if (!item) return;
   item.schema.forEach(fill => {
@@ -176,11 +174,11 @@ function resetMainScreen(item) {
 }
 
 // handle : move
-function move(direction) {
+function move(value) {
   if (!isMovable) return;
   resetMainScreen(newLastItem);
   // Move left
-  if (direction === "left") {
+  if (value === "left") {
     const canMoveLeft = newLastItem.schema.every(coord => {
       const [y, x] = coord.match(/\d+/g).map(Number);
       if (x <= 0) return false;
@@ -196,7 +194,7 @@ function move(direction) {
     }
   }
   // Move right
-  if (direction === "right") {
+  if (value === "right") {
     const canMoveRight = newLastItem.schema.every(coord => {
       const [y, x] = coord.match(/\d+/g).map(Number);
       if (x >= 9) return false;
@@ -212,7 +210,7 @@ function move(direction) {
     }
   }
   // Move down
-  if (direction === "down") {
+  if (value === "down") {
     const canMoveDown = newLastItem.schema.every(coord => {
       const [y, x] = coord.match(/\d+/g).map(Number);
       if (y >= 19) return false;
@@ -227,7 +225,7 @@ function move(direction) {
     }
   }
   // Hard drop (space)
-  if (direction === "space") {
+  if (value === "space") {
     let gap = 19;
     newLastItem.schema.forEach(coord => {
       const [y, x] = coord.match(/\d+/g).map(Number);
@@ -246,8 +244,8 @@ function move(direction) {
     });
   }
 
-  //rotation
-  if (direction === "up") {
+  // rotation
+  if (value === "up") {
     const color = newLastItem.color;
     const currentROTATIONS = ROTATIONS[color];
     let allowRotation = true;
@@ -256,7 +254,6 @@ function move(direction) {
         const [y, x] = coord.match(/\d+/g).map(Number);
         const coordNextItem = `mainScreen-y${y}-x${x - 1}`;
         const checkColor = document.getElementById(coordNextItem);
-
         // restriction by filled
         const [dy, dx] = currentROTATIONS[newLastItem.stape || 1][i] || [0, 0];
         const newY = y + dy;
@@ -267,7 +264,6 @@ function move(direction) {
           allowRotation = false; 
           return false;
         }
-
         // restriction by position
         let isPortrait = true;
         if (newLastItem.stape === 2 || newLastItem.stape === 4) isPortrait = false;
@@ -280,7 +276,6 @@ function move(direction) {
         }
         return !(checkColor && checkColor.classList.length > 0);
       });
-
       if (canMoveUp && allowRotation) {
         if (!newLastItem.stape) newLastItem.stape = 1;
         newLastItem.schema = newLastItem.schema.map((coord, i) => {
@@ -290,8 +285,7 @@ function move(direction) {
         });
         newLastItem.stape =
           newLastItem.stape < Object.keys(currentROTATIONS).length
-            ? newLastItem.stape + 1
-            : 1;
+            ? newLastItem.stape + 1  : 1;
       }
     }
   }
@@ -299,7 +293,7 @@ function move(direction) {
   }
 
 // button
-function direction(value) { move(value); }
+function action(value) { move(value); }
 
 // keyboards
 document.addEventListener("keydown", (event) => {
@@ -313,11 +307,21 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-let fallingInterval = null;
+let showScore = document.getElementById("score");
+let showLevel = document.getElementById("level");
+let score = 0;
+let lines = 0;
+let level = 1;
+let speed = 800;
 
+showLevel.textContent = level;
+showScore.textContent = score;
+
+let fallingInterval = null;
 function fall() {
   let isFalling = true;
   resetMainScreen(newLastItem);
+
   // make next schema
   const nextSchema = newLastItem.schema.map(coord => {
     const [y, x] = coord.match(/\d+/g).map(Number);
@@ -331,11 +335,13 @@ function fall() {
     }
     return `y${y + 1}-x${x}`; // item fall
   });
+
   if (!isFalling) {
     clearInterval(fallingInterval);
     fillItemMain(newLastItem);
     // check if the rows are filled
     let line = [];
+    let filledLines = [];
     for (let n = 0; n < 20; n++) {
       line[n] = [];
       for (let i = 0; i < 10; i++) {
@@ -343,10 +349,28 @@ function fall() {
         if (checkLine && checkLine.classList.length > 0) { 
           line[n].push("yes");
         } 
-        else { line[n].push("no"); }
+        else { 
+          line[n].push("no"); 
+        }
       }
       // if rows filled
       if (line[n].every(cell => cell === "yes")) {
+        filledLines.push(n); // Track the filled line index
+        // scoring
+        lines += 1;
+        showScore.textContent = score;
+        if (lines === 10) { 
+          level = level + 1; 
+          // leveling
+          if (level >= 29) { speed = 16;  } 
+          else if (level >= 20) { speed = 66; } 
+          else if (level >= 15) { speed = 83; } 
+          else if (level >= 10) { speed = 100; } 
+          else { speed = 800 - (level - 1) * 84; if (speed < 133) speed = 133; }
+          showLevel.textContent = level;  
+          lines = 0; 
+        }
+        // clear and move rows above
         for (let currentRow = n; currentRow > 0; currentRow--) {
           for (let i = 0; i < 10; i++) {
             let currentCell = document.getElementById(`mainScreen-y${currentRow}-x${i}`);
@@ -369,8 +393,19 @@ function fall() {
         }
       }
     }
-    setTimeout(() => { falling(); }, 200); return; } // reload 
-  // uptdate item position
+    // cog the number of simultaneously filled lines
+    let numberLine = filledLines.length;
+    if (filledLines.length > 0) {
+      if(numberLine === 1 ){ score += 100 }
+      if(numberLine === 2 ){ score += 300 }
+      if(numberLine === 3 ){ score += 500 }
+      if(numberLine === 4 ){ score += 800 }
+      showScore.textContent = score;
+      filledLines = [];  // reset tab
+    }
+    setTimeout(() => { falling(); }, 200); return;
+  }
+  // update item position
   newLastItem.schema = nextSchema;
   fillItemMain(newLastItem);
 }
@@ -394,7 +429,7 @@ function falling() {
     }),
   };
   fillItemMain(newLastItem);  
-  fallingInterval = setInterval(fall, 500); 
+  fallingInterval = setInterval(fall, speed); 
 }
 
 // pause
@@ -412,7 +447,7 @@ function resumeFall() {
   document.getElementById("resume").classList.add("d-none");
   document.getElementById("pause").classList.remove("d-none")
   if (!fallingInterval) {
-    fallingInterval = setInterval(fall, 500); 
+    fallingInterval = setInterval(fall, speed); 
   }
 }
 
