@@ -220,7 +220,28 @@ function move(direction) {
       }
     }
   }
-  // move left
+  // use space
+  if (direction === "space") {
+    let gap = 19;
+    // calculate gap
+    newLastItem.schema.forEach(coord => {
+      const [y, x] = coord.match(/\d+/g).map(Number);
+      for (let spaceY = y + 1; spaceY <= 19; spaceY++) {
+        const spaceCell = document.getElementById(`mainScreen-y${spaceY}-x${x}`);
+        if (spaceCell && spaceCell.classList.length > 0) {
+          gap = Math.min(gap, spaceY - y - 1);
+          break;
+        }
+      }
+      gap = Math.min(gap, 19 - y);
+    });
+    // apply gap
+    newLastItem.schema = newLastItem.schema.map(coord => {
+      const [y, x] = coord.match(/\d+/g).map(Number);
+      return `y${y + gap}-x${x}`;
+    });
+  }
+  
   if (direction === "left" && canMoveLeft) {
     newLastItem.schema = newLastItem.schema.map(coord => {
       const [y, x] = coord.match(/\d+/g).map(Number);
@@ -247,6 +268,7 @@ document.addEventListener("keydown", (event) => {
     case 37: move("left"); break; // left
     case 38: move("up"); break; // up
     case 39: move("right"); break; // right
+    case 32: move("space"); break; // space
   }
 });
 
@@ -344,7 +366,7 @@ function pauseFall() {
   }
 }
 
-// RESUME
+// resume
 function resumeFall() {
   document.getElementById("resume").classList.add("d-none");
   document.getElementById("pause").classList.remove("d-none")
@@ -352,13 +374,6 @@ function resumeFall() {
     fallingInterval = setInterval(fall, 500); 
   }
 }
-
-// function start() {
-//   lastItem = nextItem; 
-//   nextItem = randomItem(lastItem); 
-//   resetPrevScreen(lastItem); 
-//   fillItemPrev(nextItem); 
-// }
 
 // Initialisation
 fillItemPrev(nextItem);
