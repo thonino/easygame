@@ -56,7 +56,7 @@ for (let i = 0; i < 4; i++) {
 const ITEMS = [{
     color: "bg-info", 
     schema: ["y0-x0", "y1-x0", "y2-x0", "y3-x0"]
-  },{
+  }, {
     color: "bg-warning", 
     schema: ["y0-x0", "y0-x1", "y1-x0", "y1-x1"]
   },{
@@ -74,7 +74,8 @@ const ITEMS = [{
   },{
     color: "bg-purple", 
     schema: ["y0-x0","y1-x0","y2-x0","y1-x1"]
-},];
+},
+];
 
 const ROTATIONS = {
   "bg-primary": {
@@ -178,52 +179,56 @@ function resetMainScreen(item) {
 function move(direction) {
   if (!isMovable) return;
   resetMainScreen(newLastItem);
-  // left boolean
-  const canMoveLeft = newLastItem.schema.every(coord => { 
-    const [y, x] = coord.match(/\d+/g).map(Number);
-    if (x <= 0) return false;
-    const coordNextItem = `mainScreen-y${y}-x${x - 1}`;
-    const checkColor = document.getElementById(coordNextItem);
-    return !(checkColor && checkColor.classList.length > 0);
-  });
-  // right boolean
-  const canMoveRight = newLastItem.schema.every(coord => { 
-    const [y, x] = coord.match(/\d+/g).map(Number);
-    if (x >= 9) return false;
-    const coordNextItem = `mainScreen-y${y}-x${x + 1}`;
-    const checkColor = document.getElementById(coordNextItem);
-    return !(checkColor && checkColor.classList.length > 0);
-  });
-  // rotations boolean
-  const canMoveUp = newLastItem.schema.every(coord => {
-    const [y, x] = coord.match(/\d+/g).map(Number);
-    const coordNextItem = `mainScreen-y${y}-x${x - 1}`;
-    const checkColor = document.getElementById(coordNextItem);
-    return !(checkColor && checkColor.classList.length > 0);
-  });
-  // rotations
-  if (direction === "up" && canMoveUp) {
-    const color = newLastItem.color;
-    const currentROTATIONS = ROTATIONS[color];
-    if (currentROTATIONS){
-      if (!newLastItem.stape) newLastItem.stape = 1;
-      newLastItem.schema = newLastItem.schema.map((coord, i) => {
+  // Move left
+  if (direction === "left") {
+    const canMoveLeft = newLastItem.schema.every(coord => {
+      const [y, x] = coord.match(/\d+/g).map(Number);
+      if (x <= 0) return false;
+      const coordNextItem = `mainScreen-y${y}-x${x - 1}`;
+      const checkColor = document.getElementById(coordNextItem);
+      return !(checkColor && checkColor.classList.length > 0);
+    });
+    if (canMoveLeft) {
+      newLastItem.schema = newLastItem.schema.map(coord => {
         const [y, x] = coord.match(/\d+/g).map(Number);
-        const [dy, dx] = currentROTATIONS[newLastItem.stape][i] || [0, 0];
-        return `y${y + dy}-x${x + dx}`;
+        return `y${y}-x${x - 1}`;
       });
-      // update stapes
-      if (newLastItem.stape < Object.keys(currentROTATIONS).length) {
-        newLastItem.stape++;
-      } else {
-        newLastItem.stape = 1;
-      }
     }
   }
-  // use space
+  // Move right
+  if (direction === "right") {
+    const canMoveRight = newLastItem.schema.every(coord => {
+      const [y, x] = coord.match(/\d+/g).map(Number);
+      if (x >= 9) return false;
+      const coordNextItem = `mainScreen-y${y}-x${x + 1}`;
+      const checkColor = document.getElementById(coordNextItem);
+      return !(checkColor && checkColor.classList.length > 0);
+    });
+    if (canMoveRight) {
+      newLastItem.schema = newLastItem.schema.map(coord => {
+        const [y, x] = coord.match(/\d+/g).map(Number); 
+        return `y${y}-x${x + 1}`;
+      });
+    }
+  }
+  // Move down
+  if (direction === "down") {
+    const canMoveDown = newLastItem.schema.every(coord => {
+      const [y, x] = coord.match(/\d+/g).map(Number);
+      if (y >= 19) return false;
+      const nextCell = document.getElementById(`mainScreen-y${y + 1}-x${x}`);
+      return !(nextCell && nextCell.classList.length > 0);
+    });
+    if (canMoveDown) {
+      newLastItem.schema = newLastItem.schema.map(coord => {
+        const [y, x] = coord.match(/\d+/g).map(Number);
+        return `y${y + 1}-x${x}`;
+      });
+    }
+  }
+  // Hard drop (space)
   if (direction === "space") {
     let gap = 19;
-    // calculate gap
     newLastItem.schema.forEach(coord => {
       const [y, x] = coord.match(/\d+/g).map(Number);
       for (let spaceY = y + 1; spaceY <= 19; spaceY++) {
@@ -235,28 +240,63 @@ function move(direction) {
       }
       gap = Math.min(gap, 19 - y);
     });
-    // apply gap
     newLastItem.schema = newLastItem.schema.map(coord => {
       const [y, x] = coord.match(/\d+/g).map(Number);
       return `y${y + gap}-x${x}`;
     });
   }
-  
-  if (direction === "left" && canMoveLeft) {
-    newLastItem.schema = newLastItem.schema.map(coord => {
-      const [y, x] = coord.match(/\d+/g).map(Number);
-      return `y${y}-x${x - 1}`;
-    });
-  } 
-  // move left
-  else if (direction === "right" && canMoveRight) {
-    newLastItem.schema = newLastItem.schema.map(coord => {
-      const [y, x] = coord.match(/\d+/g).map(Number);
-      return `y${y}-x${x + 1}`;
-    });
+
+  //rotation
+  if (direction === "up") {
+    const color = newLastItem.color;
+    const currentROTATIONS = ROTATIONS[color];
+    let allowRotation = true;
+    if (currentROTATIONS) {
+      const canMoveUp = newLastItem.schema.every((coord, i) => {
+        const [y, x] = coord.match(/\d+/g).map(Number);
+        const coordNextItem = `mainScreen-y${y}-x${x - 1}`;
+        const checkColor = document.getElementById(coordNextItem);
+
+        // restriction by filled
+        const [dy, dx] = currentROTATIONS[newLastItem.stape || 1][i] || [0, 0];
+        const newY = y + dy;
+        const newX = x + dx;
+        const newCoord = `mainScreen-y${newY}-x${newX}`;
+        const obstacleCheck = document.getElementById(newCoord);
+        if (obstacleCheck && obstacleCheck.classList.length > 0) {
+          allowRotation = false; 
+          return false;
+        }
+
+        // restriction by position
+        let isPortrait = true;
+        if (newLastItem.stape === 2 || newLastItem.stape === 4) isPortrait = false;
+        if (isPortrait) {
+          if (newLastItem.color === "bg-info" && x > 6) allowRotation = false;
+          else if (x > 8) allowRotation = false;
+        } else {
+          if (newLastItem.color === "bg-info" && y > 16) allowRotation = false;
+          else if (y > 18) allowRotation = false;
+        }
+        return !(checkColor && checkColor.classList.length > 0);
+      });
+
+      if (canMoveUp && allowRotation) {
+        if (!newLastItem.stape) newLastItem.stape = 1;
+        newLastItem.schema = newLastItem.schema.map((coord, i) => {
+          const [y, x] = coord.match(/\d+/g).map(Number);
+          const [dy, dx] = currentROTATIONS[newLastItem.stape][i] || [0, 0];
+          return `y${y + dy}-x${x + dx}`;
+        });
+        newLastItem.stape =
+          newLastItem.stape < Object.keys(currentROTATIONS).length
+            ? newLastItem.stape + 1
+            : 1;
+      }
+    }
   }
-  fillItemMain(newLastItem);
-}
+    fillItemMain(newLastItem);
+  }
 
 // button
 function direction(value) { move(value); }
@@ -265,10 +305,11 @@ function direction(value) { move(value); }
 document.addEventListener("keydown", (event) => {
   if (!isMovable) return;
   switch (event.keyCode) {  
+    case 32: move("space"); break; // space
     case 37: move("left"); break; // left
     case 38: move("up"); break; // up
     case 39: move("right"); break; // right
-    case 32: move("space"); break; // space
+    case 40: move("down"); break; // down
   }
 });
 
