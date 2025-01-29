@@ -53,6 +53,19 @@ for (let i = 0; i < 4; i++) {
   table2.appendChild(rowDiv);
 }
 
+// reset last item on prevScreen
+function resetPrevScreen(item) {
+  if (!item) return;
+  item.schema.forEach(fill => {
+    let fullId = "prevScreen-" + fill; 
+    let cell = document.getElementById(fullId); 
+    if (cell) {
+      cell.style.backgroundColor = "#d6d8db"; 
+      cell.classList.remove(item.color); 
+    }
+  });
+}
+
 const ITEMS = [
   {
     color: "bg-info", 
@@ -135,17 +148,6 @@ function fillItemPrev(item) {
     let fullId = "prevScreen-" + fill; 
     let cell = document.getElementById(fullId); 
     if (cell) cell.classList.add(item.color); 
-  });
-}
-function resetPrevScreen(item) {
-  if (!item) return;
-  item.schema.forEach(fill => {
-    let fullId = "prevScreen-" + fill; 
-    let cell = document.getElementById(fullId); 
-    if (cell) {
-      cell.style.backgroundColor = "#d6d8db"; 
-      cell.classList.remove(item.color); 
-    }
   });
 }
 
@@ -313,15 +315,18 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
+let showTopScore = document.getElementById("topScore");
 let showScore = document.getElementById("score");
 let showLevel = document.getElementById("level");
 let score = 0;
+let topScore = 0;
 let lines = 0;
 let level = 1;
 let speed = 800;
 
 showLevel.textContent = level;
 showScore.textContent = score;
+showTopScore.textContent = topScore;
 
 let fallingInterval = null;
 function fall() {
@@ -415,11 +420,85 @@ function fall() {
   fillItemMain(newLastItem);
 }
 
+// reset table 1
+function resetTable1() {
+  for (let n = 0; n < 4; n++) {
+    for (let i = 0; i < 3; i++) {
+      let checkLine = document.getElementById(`prevScreen-y${n}-x${i}`);
+      if (checkLine) { // Vérifie si l'élément existe
+        checkLine.style.backgroundColor = "#d6d8db";
+        checkLine.classList.remove(...checkLine.classList); 
+      }
+    }
+  }
+}
+
+// reset table 2
+function resetTable2() {
+  for (let n = 0; n < 20; n++) {
+    for (let i = 0; i < 10; i++) {
+      let checkLine = document.getElementById(`mainScreen-y${n}-x${i}`);
+      if (checkLine) { // Vérifie si l'élément existe
+        checkLine.style.backgroundColor = "#d6d8db";
+        checkLine.classList.remove(...checkLine.classList); 
+      }
+    }
+  }
+}
+
+// reset Game
+function resetGame() {
+  clearInterval(fallingInterval);
+  gameOver = false;
+  score = 0;
+  level = 1;
+  lines = 0;
+  speed = 800;
+  showScore.textContent = score;
+  showLevel.textContent = level;
+  resetTable1();
+  resetTable2()
+  nextItem = randomItem();
+  lastItem = null;
+  resetPrevScreen(nextItem);
+  fillItemPrev(nextItem);
+}
+
+
+let gameOver = false;
+
 document.getElementById("pause").addEventListener("click", pauseFall);
 document.getElementById("resume").addEventListener("click", resumeFall);
 
 // start
 function falling() {
+  if(gameOver)return;
+  // handle : game over
+  let checkGameOver = document.getElementById("mainScreen-y0-x4");
+  const showGameOverModal = document.getElementById("gameOverModal");
+  const showTopScoreTrophy = document.getElementById("showTopScoreTrophy");
+  document.getElementById("start").classList.remove("d-none")
+  document.getElementById("pause").classList.add("d-none");
+  document.getElementById('endScore').textContent = score;
+  const modal = new bootstrap.Modal(showGameOverModal);
+  if (checkGameOver.classList.length > 0) {
+    clearInterval(fallingInterval); 
+    gameOver = true;
+    if(score > topScore){ 
+      topScore = score;
+      showTopScore.textContent = topScore
+    }
+    if(score === topScore){ showTopScoreTrophy.classList.remove("d-none"); }
+    else{ showTopScoreTrophy.classList.add("d-none")}
+    setTimeout(() => {
+      modal.show();
+      setTimeout(() => { 
+        modal.hide();
+        resetGame(); 
+      }, 4000);
+    }, 500);    
+    return; 
+  }
   document.getElementById("start").classList.add("d-none");
   document.getElementById("pause").classList.remove("d-none");
   lastItem = nextItem; 

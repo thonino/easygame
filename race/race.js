@@ -187,7 +187,6 @@ document.addEventListener("keydown", (event) => {
 });
 
 // Game state
-
 function toggleGame() {
   if (startGame) {
     if (isPaused) {
@@ -226,7 +225,6 @@ function toggleGame() {
     }, 1500);
   }
 }
-
 
 function startGaming() {
   startGame = true;
